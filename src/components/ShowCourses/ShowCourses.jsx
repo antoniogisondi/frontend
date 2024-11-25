@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAllCourses } from '../../services/courseService'
+import { Link } from 'react-router-dom';
 import './ShowCourses.css'
 
 function ShowCourses() {
@@ -33,10 +34,11 @@ function ShowCourses() {
                 {courses.map((course, index) => (
                     <li key={course._id}>
                         <h3>{index + 1}. {course.nome_corso}</h3>
-                        <p><strong>Indirizzo:</strong> {course.indirizzo_di_svolgimento}, {course.città_di_svolgimento} ({course.provincia})</p>
-                        <p><strong>Durata Totale:</strong> {course.durata_corso.reduce((total, d) => total + d.durata_ore, 0)} ore</p>
+                        <p><strong>N. Aut:</strong> {course.numero_autorizzazione}</p>
                         <p><strong>Categoria:</strong> {course.categoria_corso}</p>
+                        <Link to={`/dashboard/corsi/${course._id}`}>Vai al dettaglio</Link>
                     </li>
+                    
                 ))}
             </ul>
         </div>

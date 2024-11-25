@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import CreateCoursePage from './pages/CreateCoursePage/CreateCoursePage'
 import ShowCoursesPage from './pages/ShowCoursesPage/ShowCoursesPage'
+import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage'
 
 function App() {
   return (
@@ -32,6 +33,12 @@ function App() {
             element={
             <PrivateRoute>
               <ShowCoursesPage/>
+            </PrivateRoute>}
+          />
+          <Route path='/dashboard/corsi/:id' 
+            element={
+            <PrivateRoute>
+              <CourseDetailsPage/>
             </PrivateRoute>}
           />
         </Routes>

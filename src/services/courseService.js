@@ -10,3 +10,8 @@ export const getAllCourses = async () => {
     const response = await API.get('/courses/all-courses');
     return response.data;
 };
+
+export const getCourseDetails = async (courseId) => {
+    const response = await API.get(`/courses/${courseId}`);
+    return response.data;
+};

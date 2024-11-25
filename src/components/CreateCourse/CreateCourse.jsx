@@ -17,6 +17,19 @@ function CreateCourse() {
         programma_corso: [],
     });
 
+    const [partecipante, setPartecipante] = useState({
+        nome: '',
+        cognome: '',
+        email: '',
+        data_nascita: '',
+        comune_nascita: '',
+        provincia_comune_nascita: '',
+        mansione: '',
+        azienda: '',
+        partita_iva_azienda: '',
+    });
+    
+
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
     const [module, setModule] = useState({ modulo: '', descrizione: '', durata: '' });
 
@@ -24,6 +37,41 @@ function CreateCourse() {
     const handleChange = (e) => {
         setCourseData({ ...courseData, [e.target.name]: e.target.value });
     };
+
+    const addPartecipante = () => {
+        if (
+            !partecipante.nome ||
+            !partecipante.cognome ||
+            !partecipante.email ||
+            !partecipante.data_nascita ||
+            !partecipante.comune_nascita ||
+            !partecipante.provincia_comune_nascita ||
+            !partecipante.mansione ||
+            !partecipante.azienda ||
+            !partecipante.partita_iva_azienda
+        ) {
+            alert('Compila tutti i campi del partecipante.');
+            return;
+        }
+    
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: [...(prev.partecipanti || []), partecipante],
+        }));
+    
+        setPartecipante({
+            nome: '',
+            cognome: '',
+            email: '',
+            data_nascita: '',
+            comune_nascita: '',
+            provincia_comune_nascita: '',
+            mansione: '',
+            azienda: '',
+            partita_iva_azienda: '',
+        });
+    };
+    
 
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
@@ -64,6 +112,20 @@ function CreateCourse() {
             const response = await createCourse(courseData);
             alert('Corso creato con successo!');
             console.log(response);
+            setCourseData({
+                nome_corso: '',
+                numero_partecipanti: '',
+                indirizzo_di_svolgimento: '',
+                cap_sede_corso: '',
+                città_di_svolgimento: '',
+                provincia: '',
+                direttore_corso: '',
+                docente_corso: '',
+                categoria_corso: '',
+                durata_corso: [],
+                programma_corso: [],
+                partecipanti: [],
+            });
         } catch (error) {
             console.error('Errore durante la creazione del corso:', error);
             alert('Errore durante la creazione del corso.');
@@ -80,14 +142,6 @@ function CreateCourse() {
             name="nome_corso"
             placeholder="Nome del corso"
             value={courseData.nome_corso}
-            onChange={handleChange}
-            required
-        />
-        <input
-            type="number"
-            name="numero_partecipanti"
-            placeholder="Numero partecipanti"
-            value={courseData.numero_partecipanti}
             onChange={handleChange}
             required
         />
@@ -147,6 +201,73 @@ function CreateCourse() {
             onChange={handleChange}
             required
         />
+
+        <h3>Partecipanti</h3>
+        <ul>
+            {courseData.partecipanti?.map((p, index) => (
+                <li key={index}>
+                    <strong>{p.nome} {p.cognome}</strong> - {p.email}
+                    <br />
+                    Nato a {p.comune_nascita}, {p.provincia_comune_nascita} il {new Date(p.data_nascita).toLocaleDateString()}
+                    <br />
+                    Mansione: {p.mansione}, Azienda: {p.azienda} (P.IVA: {p.partita_iva_azienda})
+                </li>
+            ))}
+        </ul>
+        <input
+            type="text"
+            placeholder="Nome"
+            value={partecipante.nome}
+            onChange={(e) => setPartecipante({ ...partecipante, nome: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Cognome"
+            value={partecipante.cognome}
+            onChange={(e) => setPartecipante({ ...partecipante, cognome: e.target.value })}
+        />
+        <input
+            type="email"
+            placeholder="Email"
+            value={partecipante.email}
+            onChange={(e) => setPartecipante({ ...partecipante, email: e.target.value })}
+        />
+        <input
+            type="date"
+            value={partecipante.data_nascita}
+            onChange={(e) => setPartecipante({ ...partecipante, data_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Comune di Nascita"
+            value={partecipante.comune_nascita}
+            onChange={(e) => setPartecipante({ ...partecipante, comune_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Provincia Comune di Nascita"
+            value={partecipante.provincia_comune_nascita}
+            onChange={(e) => setPartecipante({ ...partecipante, provincia_comune_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Mansione"
+            value={partecipante.mansione}
+            onChange={(e) => setPartecipante({ ...partecipante, mansione: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Azienda"
+            value={partecipante.azienda}
+            onChange={(e) => setPartecipante({ ...partecipante, azienda: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Partita IVA Azienda"
+            value={partecipante.partita_iva_azienda}
+            onChange={(e) => setPartecipante({ ...partecipante, partita_iva_azienda: e.target.value })}
+        />
+        <button type="button" onClick={addPartecipante}>Aggiungi Partecipante</button>
 
         <h3>Durata del Corso</h3>
         <ul>
