@@ -22,7 +22,6 @@ function RegisterPage() {
         e.preventDefault()
         try {
             await registerUser(formData);
-            alert('Registrazione completata!');
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.message || 'Errore durante la registrazione');

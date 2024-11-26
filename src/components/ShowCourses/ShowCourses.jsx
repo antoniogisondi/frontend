@@ -37,6 +37,7 @@ function ShowCourses() {
                         <p><strong>N. Aut:</strong> {course.numero_autorizzazione}</p>
                         <p><strong>Categoria:</strong> {course.categoria_corso}</p>
                         <Link to={`/dashboard/corsi/${course._id}`}>Vai al dettaglio</Link>
+                        <Link to={`/dashboard/corsi/${course._id}/modifica`}>Vai al dettaglio</Link>
                     </li>
                     
                 ))}

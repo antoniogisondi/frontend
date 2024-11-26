@@ -19,7 +19,6 @@ function LoginPage() {
         try {
             const { data } = await loginUser(formData);
             localStorage.setItem('token', data.token);
-            alert('Login effettuato con successo!');
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Errore durante il login');

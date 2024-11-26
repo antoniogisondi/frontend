@@ -15,3 +15,8 @@ export const getCourseDetails = async (courseId) => {
     const response = await API.get(`/courses/${courseId}`);
     return response.data;
 };
+
+export const updateCourse = async (courseId, update) => {
+    const response = API.put(`/courses/${courseId}/modifica`, update)
+    return response.data
+}

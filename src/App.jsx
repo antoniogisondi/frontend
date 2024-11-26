@@ -8,6 +8,7 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import CreateCoursePage from './pages/CreateCoursePage/CreateCoursePage'
 import ShowCoursesPage from './pages/ShowCoursesPage/ShowCoursesPage'
 import CourseDetailsPage from './pages/CourseDetailsPage/CourseDetailsPage'
+import UpdateCoursePage from './pages/UpdateCoursePage/UpdateCoursePage'
 
 function App() {
   return (
@@ -39,6 +40,12 @@ function App() {
             element={
             <PrivateRoute>
               <CourseDetailsPage/>
+            </PrivateRoute>}
+          />
+          <Route path='/dashboard/corsi/:id/modifica' 
+            element={
+            <PrivateRoute>
+              <UpdateCoursePage/>
             </PrivateRoute>}
           />
         </Routes>
