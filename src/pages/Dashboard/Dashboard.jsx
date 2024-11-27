@@ -21,7 +21,6 @@ function Dashboard() {
         <div>
             <h1>Dashboard</h1>
             <p>{message}</p>
-            <Link to='/dashboard/crea-corso'>Crea un corso</Link>
             <Link to='/dashboard/corsi'>Vedi i corsi</Link>
         </div>
     )

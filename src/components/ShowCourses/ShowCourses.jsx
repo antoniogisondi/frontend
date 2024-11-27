@@ -42,25 +42,29 @@ function ShowCourses() {
 
     return (
         <div>
+            <Link to='/dashboard/crea-corso'>Crea un corso</Link>
             <h2>Elenco dei Corsi</h2>
-            <ul>
-                {courses.map((course, index) => (
-                    <li key={course._id}>
+            {courses.length === 0 ? ( // Controlla se la lista è vuota
+                <p style={{ color: 'gray', fontStyle: 'italic' }}>Attualmente non ci sono corsi disponibili.</p>
+            ) : (
+                <ul>
+                    {courses.map((course, index) => (
+                        <li key={course._id}>
                         <h3>{index + 1}. {course.nome_corso}</h3>
                         <p><strong>N. Aut:</strong> {course.numero_autorizzazione}</p>
                         <p><strong>Categoria:</strong> {course.categoria_corso}</p>
                         <Link to={`/dashboard/corsi/${course._id}`}>Vai al dettaglio</Link>
                         <Link to={`/dashboard/corsi/${course._id}/modifica`}>Vai al dettaglio</Link>
-                        <button
-                            style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}
-                            onClick={() => handleDelete(course._id)}
-                        >
-                            Elimina
-                        </button>
-                    </li>
-                    
-                ))}
-            </ul>
+                        <form  onClick={() => handleDelete(course._id)}>
+                            <button
+                                style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}>
+                                Elimina
+                            </button>
+                        </form>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
