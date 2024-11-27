@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getAllCourses } from '../../services/courseService'
+import { getAllCourses, deleteCourse } from '../../services/courseService'
 import { Link } from 'react-router-dom';
 import './ShowCourses.css'
 
@@ -24,6 +24,19 @@ function ShowCourses() {
         fetchCourses();
     }, []);
 
+    const handleDelete = async (id) => {
+        if (window.confirm('Sei sicuro di voler eliminare questo corso?')) {
+            try {
+                await deleteCourse(id);
+                alert('Corso eliminato con successo!');
+                setCourses(courses.filter((course) => course._id !== id)); // Aggiorna la lista
+            } catch (error) {
+                console.error('Errore durante l\'eliminazione del corso:', error);
+                alert('Errore durante l\'eliminazione del corso.');
+            }
+        }
+    };
+
     if (loading) return <p>Caricamento in corso...</p>;
     if (error) return <p>{error}</p>;
 
@@ -38,6 +51,12 @@ function ShowCourses() {
                         <p><strong>Categoria:</strong> {course.categoria_corso}</p>
                         <Link to={`/dashboard/corsi/${course._id}`}>Vai al dettaglio</Link>
                         <Link to={`/dashboard/corsi/${course._id}/modifica`}>Vai al dettaglio</Link>
+                        <button
+                            style={{ marginLeft: '10px', backgroundColor: 'red', color: 'white' }}
+                            onClick={() => handleDelete(course._id)}
+                        >
+                            Elimina
+                        </button>
                     </li>
                     
                 ))}
