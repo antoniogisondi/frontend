@@ -25,3 +25,16 @@ export const deleteCourse = async (courseId) => {
     const response = API.delete(`/courses/${courseId}/cancella`)
     return await response.data
 }
+
+export const getAllParticipants = async (searchTerm) => {
+    try {
+        // Effettua una richiesta GET con il parametro di ricerca
+        const response = await API.get(`/participants/select`);
+
+        // Restituisce i dati dei partecipanti
+        return response.data;
+    } catch (error) {
+        console.error('Errore durante la ricerca dei partecipanti:', error);
+        throw new Error('Impossibile recuperare i partecipanti.');
+    }
+};

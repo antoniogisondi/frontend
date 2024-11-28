@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getCourseDetails, updateCourse } from '../../services/courseService';
+import { getCourseDetails, updateCourse, getAllParticipants } from '../../services/courseService';
 import './UpdateCourse.css';
 
 function UpdateCourse() {
@@ -20,6 +20,20 @@ function UpdateCourse() {
         programma_corso: [],
     });
 
+    const [participants, setParticipants] = useState([]); // Lista di tutti i partecipanti esistenti
+    const [selectedParticipant, setSelectedParticipant] = useState('');
+    const [newParticipant, setNewParticipant] = useState({
+        nome: '',
+        cognome: '',
+        email: '',
+        data_nascita: '',
+        comune_nascita: '',
+        provincia_comune_nascita: '',
+        mansione: '',
+        azienda: '',
+        partita_iva_azienda: '',
+    });
+
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
     const [module, setModule] = useState({ modulo: '', descrizione: '', durata: '' });
     const [loading, setLoading] = useState(true);
@@ -31,6 +45,8 @@ function UpdateCourse() {
             try {
                 const data = await getCourseDetails(id);
                 setCourseData(data.course);
+                const participantsList = await getAllParticipants();
+                setParticipants(participantsList);
                 setLoading(false);
             } catch (error) {
                 console.error('Errore durante il recupero del corso:', error);
@@ -48,6 +64,68 @@ function UpdateCourse() {
             ...prevData,
             [e.target.name]: e.target.value,
         }));
+    };
+
+    const addNewParticipant = () => {
+        if (
+            !newParticipant.nome ||
+            !newParticipant.cognome ||
+            !newParticipant.email ||
+            !newParticipant.data_nascita ||
+            !newParticipant.comune_nascita ||
+            !newParticipant.provincia_comune_nascita ||
+            !newParticipant.mansione ||
+            !newParticipant.azienda ||
+            !newParticipant.partita_iva_azienda
+        ) {
+            alert('Compila tutti i campi del partecipante.');
+            return;
+        }
+
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: [...prev.partecipanti, newParticipant],
+        }));
+
+        setNewParticipant({
+            nome: '',
+            cognome: '',
+            email: '',
+            data_nascita: '',
+            comune_nascita: '',
+            provincia_comune_nascita: '',
+            mansione: '',
+            azienda: '',
+            partita_iva_azienda: '',
+        });
+    };
+
+    const removeParticipant = (index) => {
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: prev.partecipanti.filter((_, i) => i !== index),
+        }));
+    };
+
+    const addExistingParticipant = () => {
+        if (!selectedParticipant) {
+            alert('Seleziona un partecipante da aggiungere.');
+            return;
+        }
+
+        const participantToAdd = participants.find((p) => p._id === selectedParticipant);
+
+        if (!participantToAdd) {
+            alert('Partecipante non valido.');
+            return;
+        }
+
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: [...prev.partecipanti, participantToAdd],
+        }));
+
+        setSelectedParticipant('');
     };
 
     // Aggiunge un giorno alla durata del corso
@@ -172,6 +250,91 @@ function UpdateCourse() {
                 onChange={handleChange}
                 required
             />
+
+            <h3>Partecipanti</h3>
+            <ul>
+                {courseData.partecipanti.map((p, index) => (
+                    <li key={index}>
+                        {p.nome} {p.cognome} - {p.email}
+                        <button
+                            type="button"
+                            onClick={() => removeParticipant(index)}
+                        >
+                            Rimuovi
+                        </button>
+                    </li>
+                ))}
+            </ul>
+
+            <select
+                value={selectedParticipant}
+                onChange={(e) => setSelectedParticipant(e.target.value)}
+            >
+                <option value="">Seleziona un partecipante</option>
+                {participants.map((p) => (
+                    <option key={p._id} value={p._id}>
+                        {p.nome} {p.cognome}
+                    </option>
+                ))}
+            </select>
+            <button type="button" onClick={addExistingParticipant}>
+                Aggiungi Partecipante Esistente
+            </button>
+
+            <input
+            type="text"
+            placeholder="Nome"
+            value={newParticipant.nome}
+            onChange={(e) => setNewParticipant({ ...newParticipant, nome: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Cognome"
+            value={newParticipant.cognome}
+            onChange={(e) => setNewParticipant({ ...newParticipant, cognome: e.target.value })}
+        />
+        <input
+            type="email"
+            placeholder="Email"
+            value={newParticipant.email}
+            onChange={(e) => setNewParticipant({ ...newParticipant, email: e.target.value })}
+        />
+        <input
+            type="date"
+            value={newParticipant.data_nascita}
+            onChange={(e) => setNewParticipant({ ...newParticipant, data_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Comune di Nascita"
+            value={newParticipant.comune_nascita}
+            onChange={(e) => setNewParticipant({ ...newParticipant, comune_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Provincia Comune di Nascita"
+            value={newParticipant.provincia_comune_nascita}
+            onChange={(e) => setNewParticipant({ ...newParticipant, provincia_comune_nascita: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Mansione"
+            value={newParticipant.mansione}
+            onChange={(e) => setNewParticipant({ ...newParticipant, mansione: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Azienda"
+            value={newParticipant.azienda}
+            onChange={(e) => setNewParticipant({ ...newParticipant, azienda: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Partita IVA Azienda"
+            value={newParticipant.partita_iva_azienda}
+            onChange={(e) => setNewParticipant({ ...newParticipant, partita_iva_azienda: e.target.value })}
+        />
+        <button type="button" onClick={addNewParticipant}>Aggiungi Partecipante</button>
 
             {/* Durata del corso */}
             <h3>Durata del Corso</h3>

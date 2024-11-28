@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
-import { createCourse } from '../../services/courseService';
+import React, {useState, useEffect} from 'react'
+import { createCourse, getAllParticipants } from '../../services/courseService';
 import './CreateCourse.css'
 
 function CreateCourse() {
+    // INIZIALIZZO LO STATO DEL CORSO
     const [courseData, setCourseData] = useState({
         nome_corso: '',
         numero_partecipanti: '',
@@ -17,6 +18,7 @@ function CreateCourse() {
         programma_corso: [],
     });
 
+    // INIZIALIZZO LO STATO DEL PARTECIPANTE
     const [partecipante, setPartecipante] = useState({
         nome: '',
         cognome: '',
@@ -29,26 +31,44 @@ function CreateCourse() {
         partita_iva_azienda: '',
     });
     
-
+    // INIZIALIZZO LO STATO PER L'AGGIUNTA DELLA DURATA
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
+
+    // INIZIALIZZO LO STATO PER L'AGGIUNTA DEL MODULO
     const [module, setModule] = useState({ modulo: '', descrizione: '', durata: '' });
 
-    // Gestione degli input generici
+    // INIZIALIZZO LO STATO PER L'AGGIUNTA DI TUTTI I PARTECIPANTI NELLA SELECT
+    const [allParticipants, setAllParticipants] = useState([]);
+    const [selectedParticipantId, setSelectedParticipantId] = useState('');
+
+    useEffect(() => {
+        const fetchParticipants = async () => {
+            try {
+                const participants = await getAllParticipants();
+                setAllParticipants(participants);
+            } catch (error) {
+                console.error('Errore durante il recupero dei partecipanti:', error);
+                alert('Errore durante il recupero dei partecipanti.');
+            }
+        };
+
+        fetchParticipants();
+    }, []);
+
+    // GESTIONE DEGLI INPUT GENERICI
     const handleChange = (e) => {
         setCourseData({ ...courseData, [e.target.name]: e.target.value });
     };
 
+
+    // INSERIMENTO DEL NUOVO PARTECIPANTE 
     const addPartecipante = () => {
         if (
             !partecipante.nome ||
             !partecipante.cognome ||
-            !partecipante.email ||
             !partecipante.data_nascita ||
             !partecipante.comune_nascita ||
-            !partecipante.provincia_comune_nascita ||
-            !partecipante.mansione ||
-            !partecipante.azienda ||
-            !partecipante.partita_iva_azienda
+            !partecipante.provincia_comune_nascita
         ) {
             alert('Compila tutti i campi del partecipante.');
             return;
@@ -71,8 +91,30 @@ function CreateCourse() {
             partita_iva_azienda: '',
         });
     };
-    
 
+    // INSERIMENTO PARTECIPANTE ESISTENTE
+    const addExistingParticipant = () => {
+        const participant = allParticipants.find((p) => p._id === selectedParticipantId);
+    
+        if (!participant) {
+            alert('Seleziona un partecipante valido.');
+            return;
+        }
+    
+        if (courseData.partecipanti && courseData.partecipanti.some((p) => p._id === participant._id)) {
+            alert('Il partecipante è già associato a questo corso.');
+            return;
+        }
+    
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: [...(prev.partecipanti || []), participant], // Assicurati che partecipanti sia un array
+        }));
+    
+        setSelectedParticipantId('');
+    };
+    
+    // INSERIMENTO DURATA DEL CORSO
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
             alert('Compila sia il giorno che la durata in ore.');
@@ -89,19 +131,18 @@ function CreateCourse() {
         setDurationDay({ giorno: '', durata_ore: '' });
     };
 
+    // INSERIMENTO DEL MODULO
     const addModule = () => {
         if (!module.modulo || !module.descrizione || !module.durata) {
             alert('Compila tutti i campi del modulo.');
             return;
         }
     
-        // Aggiungi il modulo al programma del corso
         setCourseData((prev) => ({
             ...prev,
             programma_corso: [...prev.programma_corso, module],
         }));
     
-        // Resetta i campi del modulo
         setModule({ modulo: '', descrizione: '', durata: '' });
     };
 
@@ -132,11 +173,8 @@ function CreateCourse() {
         }
     };
 
-
-
     return (
         <form onSubmit={handleSubmit}>
-        {/* Campi statici */}
         <input
             type="text"
             name="nome_corso"
@@ -214,6 +252,21 @@ function CreateCourse() {
                 </li>
             ))}
         </ul>
+        <h4>Aggiungi Partecipante Esistente</h4>
+            <select
+                value={selectedParticipantId}
+                onChange={(e) => setSelectedParticipantId(e.target.value)}
+            >
+                <option value="">-- Seleziona un partecipante --</option>
+                {allParticipants.map((p) => (
+                    <option key={p._id} value={p._id}>
+                        {p.nome} {p.cognome} - {p.email}
+                    </option>
+                ))}
+            </select>
+            <button type="button" onClick={addExistingParticipant}>
+                Aggiungi Partecipante Esistente
+            </button>
         <input
             type="text"
             placeholder="Nome"

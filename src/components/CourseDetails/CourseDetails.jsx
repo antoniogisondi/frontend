@@ -57,10 +57,10 @@ function CourseDetails() {
             </ul>
 
             <h3>Partecipanti</h3>
-            {participants.length > 0 ? (
+            {course.partecipanti && course.partecipanti.length > 0 ? (
                 <ul>
-                    {participants.map((p, index) => (
-                        <li key={index}>
+                    {course.partecipanti.map((p) => (
+                        <li key={p._id}>
                             <strong>{p.nome} {p.cognome}</strong> - {p.email}
                             <br />
                             Nato a {p.comune_nascita}, {p.provincia_comune_nascita} il {new Date(p.data_nascita).toLocaleDateString()}
