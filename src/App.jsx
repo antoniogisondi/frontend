@@ -16,8 +16,7 @@ import 'bootstrap/dist/js/bootstrap.bundle'
 function App() {
   return (
     <>
-
-      <Router>
+    <Router>
       <AuthProvider>
         <Routes>
           <Route path='/' element={<HomePage/>}/>
@@ -54,9 +53,8 @@ function App() {
             </PrivateRoute>}
           />
         </Routes>
-        </AuthProvider>
-      </Router>
-    
+      </AuthProvider>
+    </Router>
     </>
   )
 }
