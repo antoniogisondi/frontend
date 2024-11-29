@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react'
 import { createCourse, getAllParticipants } from '../../services/courseService';
+import courses from '../../services/courses'
 import './CreateCourse.css'
 
 function CreateCourse() {
+
+    const [selectedCourse, setSelectedCourse] = useState('');
     // INIZIALIZZO LO STATO DEL CORSO
     const [courseData, setCourseData] = useState({
         nome_corso: '',
-        numero_partecipanti: '',
         indirizzo_di_svolgimento: '',
         cap_sede_corso: '',
         città_di_svolgimento: '',
@@ -16,6 +18,7 @@ function CreateCourse() {
         categoria_corso: '',
         durata_corso: [],
         programma_corso: [],
+        partecipanti: []
     });
 
     // INIZIALIZZO LO STATO DEL PARTECIPANTE
@@ -34,9 +37,6 @@ function CreateCourse() {
     // INIZIALIZZO LO STATO PER L'AGGIUNTA DELLA DURATA
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
 
-    // INIZIALIZZO LO STATO PER L'AGGIUNTA DEL MODULO
-    const [module, setModule] = useState({ modulo: '', descrizione: '', durata: '' });
-
     // INIZIALIZZO LO STATO PER L'AGGIUNTA DI TUTTI I PARTECIPANTI NELLA SELECT
     const [allParticipants, setAllParticipants] = useState([]);
     const [selectedParticipantId, setSelectedParticipantId] = useState('');
@@ -54,6 +54,16 @@ function CreateCourse() {
 
         fetchParticipants();
     }, []);
+
+    const handleCourseSelect = (e) => {
+        const selected = courses.find((course) => course.nome_corso === e.target.value);
+        setSelectedCourse(selected.nome_corso);
+        setCourseData((prev) => ({
+            ...prev,
+            nome_corso: selected.nome_corso,
+            programma_corso: selected.programma_corso,
+        }));
+    };
 
     // GESTIONE DEGLI INPUT GENERICI
     const handleChange = (e) => {
@@ -131,21 +141,6 @@ function CreateCourse() {
         setDurationDay({ giorno: '', durata_ore: '' });
     };
 
-    // INSERIMENTO DEL MODULO
-    const addModule = () => {
-        if (!module.modulo || !module.descrizione || !module.durata) {
-            alert('Compila tutti i campi del modulo.');
-            return;
-        }
-    
-        setCourseData((prev) => ({
-            ...prev,
-            programma_corso: [...prev.programma_corso, module],
-        }));
-    
-        setModule({ modulo: '', descrizione: '', durata: '' });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(courseData)
@@ -175,14 +170,17 @@ function CreateCourse() {
 
     return (
         <form onSubmit={handleSubmit}>
-        <input
-            type="text"
-            name="nome_corso"
-            placeholder="Nome del corso"
-            value={courseData.nome_corso}
-            onChange={handleChange}
-            required
-        />
+            <label>
+                Nome del Corso:
+                <select value={selectedCourse} onChange={handleCourseSelect} required>
+                    <option value="">Seleziona un corso</option>
+                    {courses.map((course,index) => (
+                        <option key={index} value={course.nome_corso}>
+                            {course.nome_corso}
+                        </option>
+                    ))}
+                </select>
+            </label>
         <input
             type="text"
             name="indirizzo_di_svolgimento"
@@ -345,42 +343,13 @@ function CreateCourse() {
         </button>
 
         <h3>Programma del Corso</h3>
-        <ul>
-            {courseData.programma_corso.map((modulo, index) => (
-                <li key={index}>
-                    <div>
-                        <strong>Modulo:</strong> {modulo.modulo}
-                    </div>
-                    <div>
-                        <strong>Titolo:</strong> {modulo.descrizione}, 
-                        <strong> Durata:</strong> {modulo.durata} minuti
-                    </div>
-                </li>
-            ))}
-        </ul>  
-
-        <h4>Aggiungi un Modulo</h4>
-        <input
-            type="text"
-            placeholder="Nome Modulo"
-            value={module.modulo}
-            onChange={(e) => setModule({ ...module, modulo: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Descrizione Modulo"
-            value={module.descrizione}
-            onChange={(e) => setModule({ ...module, descrizione: e.target.value })}
-        />
-        <input
-            type="number"
-            placeholder="Durata Modulo (minuti)"
-            value={module.durata}
-            onChange={(e) => setModule({ ...module, durata: e.target.value })}
-        />
-        <button type="button" onClick={addModule}>
-            Aggiungi Modulo
-        </button>
+            <ul>
+                {courseData.programma_corso.map((modulo, index) => (
+                    <li key={index}>
+                        Modulo: {modulo.modulo}, Descrizione: {modulo.descrizione}, Durata: {modulo.durata} minuti
+                    </li>
+                ))}
+            </ul>
         <button type="submit">Crea corso</button>
     </form>
     )

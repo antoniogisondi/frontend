@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCourseDetails, updateCourse, getAllParticipants } from '../../services/courseService';
+import courses from '../../services/courses'
 import './UpdateCourse.css';
 
 function UpdateCourse() {
@@ -18,7 +19,9 @@ function UpdateCourse() {
         categoria_corso: '',
         durata_corso: [],
         programma_corso: [],
+        partecipanti: []
     });
+    const [selectedCourse, setSelectedCourse] = useState('');
 
     const [participants, setParticipants] = useState([]); // Lista di tutti i partecipanti esistenti
     const [selectedParticipant, setSelectedParticipant] = useState('');
@@ -35,7 +38,6 @@ function UpdateCourse() {
     });
 
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
-    const [module, setModule] = useState({ modulo: '', descrizione: '', durata: '' });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -45,6 +47,7 @@ function UpdateCourse() {
             try {
                 const data = await getCourseDetails(id);
                 setCourseData(data.course);
+                setSelectedCourse(data.course.nome_corso)
                 const participantsList = await getAllParticipants();
                 setParticipants(participantsList);
                 setLoading(false);
@@ -57,6 +60,16 @@ function UpdateCourse() {
 
         fetchCourse();
     }, [id]);
+
+    const handleCourseSelect = (e) => {
+        const selected = courses.find((course) => course.nome_corso === e.target.value);
+        setSelectedCourse(selected.nome_corso);
+        setCourseData((prev) => ({
+            ...prev,
+            nome_corso: selected.nome_corso,
+            programma_corso: selected.programma_corso,
+        }));
+    };
 
     // Gestisce i cambiamenti negli input generici
     const handleChange = (e) => {
@@ -143,26 +156,22 @@ function UpdateCourse() {
         setDurationDay({ giorno: '', durata_ore: '' });
     };
 
-    // Aggiunge un modulo al programma del corso
-    const addModule = () => {
-        if (!module.modulo || !module.descrizione || !module.durata) {
-            alert('Compila tutti i campi del modulo.');
-            return;
-        }
-
-        setCourseData((prev) => ({
-            ...prev,
-            programma_corso: [...prev.programma_corso, module],
-        }));
-
-        setModule({ modulo: '', descrizione: '', durata: '' });
-    };
-
     // Gestisce l'invio del modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+
+            const preparedData = {
+                ...courseData,
+                partecipanti: courseData.partecipanti.map((p) => {
+                    if (p._id) {
+                        return {_id:p._id}
+                    }
+
+                    return p
+                })
+            }
             await updateCourse(id, courseData);
             alert('Corso aggiornato con successo!');
             navigate(`/dashboard/corsi/${id}`);
@@ -179,14 +188,17 @@ function UpdateCourse() {
     return (
         <form onSubmit={handleSubmit}>
             {/* Campi del corso */}
-            <input
-                type="text"
-                name="nome_corso"
-                placeholder="Nome del corso"
-                value={courseData.nome_corso}
-                onChange={handleChange}
-                required
-            />
+            <label>
+                Nome del Corso:
+                <select value={selectedCourse} onChange={handleCourseSelect} required>
+                    <option value="">Seleziona un corso</option>
+                    {courses.map((course, index) => (
+                        <option key={index} value={course.nome_corso}>
+                            {course.nome_corso}
+                        </option>
+                    ))}
+                </select>
+            </label>
 
             <input
                 type="text"
@@ -371,47 +383,14 @@ function UpdateCourse() {
                 Aggiungi Data
             </button>
 
-            {/* Programma del corso */}
             <h3>Programma del Corso</h3>
             <ul>
                 {courseData.programma_corso.map((modulo, index) => (
                     <li key={index}>
                         Modulo: {modulo.modulo}, Descrizione: {modulo.descrizione}, Durata: {modulo.durata} minuti
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setCourseData((prev) => ({
-                                    ...prev,
-                                    programma_corso: prev.programma_corso.filter((_, i) => i !== index),
-                                }));
-                            }}
-                        >
-                            Elimina
-                        </button>
                     </li>
                 ))}
             </ul>
-            <input
-                type="text"
-                placeholder="Nome Modulo"
-                value={module.modulo}
-                onChange={(e) => setModule({ ...module, modulo: e.target.value })}
-            />
-            <input
-                type="text"
-                placeholder="Descrizione Modulo"
-                value={module.descrizione}
-                onChange={(e) => setModule({ ...module, descrizione: e.target.value })}
-            />
-            <input
-                type="number"
-                placeholder="Durata Modulo (minuti)"
-                value={module.durata}
-                onChange={(e) => setModule({ ...module, durata: e.target.value })}
-            />
-            <button type="button" onClick={addModule}>
-                Aggiungi Modulo
-            </button>
 
             {/* Pulsante di invio */}
             <button type="submit">Aggiorna Corso</button>
