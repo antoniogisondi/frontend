@@ -17,12 +17,15 @@ function Homepage() {
                     <>
                       <h1 className="display-4 mb-4">Benvenuto nella Piattaforma</h1>
                       <p className="lead mb-5">Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.</p>
+                      <Link to='/dashboard'>Vai alla dashboard</Link>
                     </>
                   ) : (
-                    <div className="d-flex justify-content-center gap-3">
-                    <Link to='/accesso' className="btn btn-outline-secondary btn-lg">Vai al login</Link>
-                    <Link to='/registrazione' className="btn btn-primary btn-lg">Vai alla registrazione</Link>
-                  </div>
+                    <>
+                      <h1 className="display-4 mb-4">Benvenuto nella Piattaforma</h1>
+                      <p className="lead mb-5">Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.</p>
+                      <Link to='/accesso' className="btn btn-outline-secondary btn-lg">Vai al login</Link>
+                      <Link to='/registrazione' className="btn btn-primary btn-lg">Vai alla registrazione</Link>
+                    </>
                   )}
                 </div>
             </div>

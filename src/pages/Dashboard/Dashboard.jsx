@@ -2,24 +2,10 @@ import React,{ useState, useEffect, useContext } from "react";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { Link, Navigate } from "react-router-dom";
-import API from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 
 function Dashboard() {
     const {isAuthenticated} = useContext(AuthContext)
-    const [message, setMessage] = useState('');
-
-    // useEffect(() => {
-    //     const fetchMessage = async () => {
-    //         try {
-    //             const { data } = await API.get('/private');
-    //         } catch (err) {
-    //             console.error('Errore durante il recupero dei dati:', err);
-    //         }
-    //     };
-
-    //     fetchMessage();
-    // }, []);
     return (
         <>
         <Header/>
