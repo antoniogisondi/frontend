@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 const PrivateRoute = ({ children }) => {
-    const token = localStorage.getItem('token'); // Recupera il token dal localStorage
+    const { isAuthenticated, loading } = useContext(AuthContext);
 
-    // Se il token non esiste, reindirizza alla pagina di login
-    if (!token) {
+    // Mostra un loader mentre verifica l'autenticazione
+    if (loading) {
+        return <p>Caricamento...</p>;
+    }
+
+    // Se non autenticato, reindirizza alla pagina di login
+    if (!isAuthenticated) {
         return <Navigate to="/accesso" />;
     }
 
-    return children; // Altrimenti mostra il contenuto protetto
+    return children;
 };
 
 export default PrivateRoute;

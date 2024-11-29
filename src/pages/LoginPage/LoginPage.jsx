@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/api';
+import {useContext} from 'react'
+import { AuthContext } from '../../context/AuthContext';
+
 
 function LoginPage() {
     const [formData, setFormData] = useState({
@@ -8,6 +11,7 @@ function LoginPage() {
         password: '',
     });
     const [error, setError] = useState('');
+    const {login} = useContext(AuthContext)
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -18,7 +22,7 @@ function LoginPage() {
         e.preventDefault();
         try {
             const { data } = await loginUser(formData);
-            localStorage.setItem('token', data.token);
+            login(data.token)
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Errore durante il login');
