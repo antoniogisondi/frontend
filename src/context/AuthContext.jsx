@@ -3,37 +3,24 @@ import { useNavigate } from 'react-router-dom';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
-    const [token, setToken] = useState(null);
-    const navigate = useNavigate();
 
-    // Verifica se l'utente è autenticato al caricamento dell'app
-    useEffect(() => {
-        const savedToken = localStorage.getItem('token');
-        if (savedToken) {
-            setToken(savedToken);
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
-    }, []);
-
-    const login = (userToken) => {
-        setToken(userToken);
-        setIsAuthenticated(true);
-        localStorage.setItem('token', userToken);
+    const login = (token) => {
+        localStorage.setItem('token', token);
+        setIsAuthenticated(true)
     };
 
     const logout = () => {
-        setToken(null);
-        setIsAuthenticated(false);
         localStorage.removeItem('token');
-        navigate('/'); // Reindirizza alla pagina di accesso
+        setIsAuthenticated(false);
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, loading, token, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export const useAuth = () => useContext(AuthContext)

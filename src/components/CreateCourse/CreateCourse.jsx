@@ -22,6 +22,7 @@ function CreateCourse() {
     const [partecipante, setPartecipante] = useState({
         nome: '',
         cognome: '',
+        codice_fiscale: '',
         email: '',
         data_nascita: '',
         comune_nascita: '',
@@ -64,7 +65,7 @@ function CreateCourse() {
     };
 
     const addPartecipante = () => {
-        if (!partecipante.nome || !partecipante.cognome || !partecipante.data_nascita) {
+        if (!partecipante.nome || !partecipante.cognome || !partecipante.data_nascita || !partecipante.codice_fiscale) {
             alert('Compila tutti i campi richiesti del partecipante.');
             return;
         }
@@ -77,6 +78,7 @@ function CreateCourse() {
         setPartecipante({
             nome: '',
             cognome: '',
+            codice_fiscale: '',
             email: '',
             data_nascita: '',
             comune_nascita: '',
@@ -108,6 +110,13 @@ function CreateCourse() {
         setSelectedParticipantId('');
     };
 
+    const removeParticipant = (index) => {
+        setCourseData((prev) => ({
+            ...prev,
+            partecipanti: prev.partecipanti.filter((_, i) => i !== index),
+        }));
+    };
+
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
             alert('Compila sia il giorno che la durata in ore.');
@@ -120,6 +129,13 @@ function CreateCourse() {
         }));
 
         setDurationDay({ giorno: '', durata_ore: '' });
+    };
+
+    const removeDurationDay = (index) => {
+        setCourseData((prev) => ({
+            ...prev,
+            durata_corso: prev.durata_corso.filter((_, i) => i !== index),
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -212,10 +228,8 @@ function CreateCourse() {
                 <ul className="list-group mb-3">
                     {courseData.partecipanti?.map((p, index) => (
                         <li className="list-group-item" key={index}>
-                            <strong>
-                                {p.nome} {p.cognome}
-                            </strong>{' '}
-                            - {p.email}
+                            <strong>{p.nome} {p.cognome}</strong> - {p.codice_fiscale}
+                            <button type="button" onClick={() => removeParticipant(index)}>Rimuovi</button>
                         </li>
                     ))}
                 </ul>
@@ -252,6 +266,7 @@ function CreateCourse() {
                 {[
                     { name: 'nome', label: 'Nome', type: 'text' },
                     { name: 'cognome', label: 'Cognome', type: 'text' },
+                    {name: 'codice_fiscale', label: 'Codice Fiscale', type: 'text'},
                     { name: 'email', label: 'Email', type: 'email' },
                     { name: 'data_nascita', label: 'Data di Nascita', type: 'date' },
                     { name: 'comune_nascita', label: 'Comune di Nascita', type: 'text' },
@@ -288,6 +303,7 @@ function CreateCourse() {
                     {courseData.durata_corso.map((item, index) => (
                         <li key={index}>
                             Giorno: {item.giorno}, Durata Ore: {item.durata_ore}
+                            <button type='button' className='btn btn-danger btn-sm' onClick={() => removeDurationDay(index)}>Rimuovi</button>
                         </li>
                     ))}
                 </ul>

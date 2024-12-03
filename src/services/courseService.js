@@ -38,3 +38,18 @@ export const getAllParticipants = async (searchTerm) => {
         throw new Error('Impossibile recuperare i partecipanti.');
     }
 };
+
+export const getParticipantsById = async (id) => {
+    const response = await API.get(`/participants/${id}`)
+    return response.data
+}
+
+export const updateParticipants = async (participantId, update) => {
+    const response = API.put(`/participants/${participantId}/modifica`, update)
+    return response.data
+}
+
+export const deleteParticipant = async (id) => {
+    const response = await API.delete(`/participants/${id}/elimina`)
+    return response.data
+}

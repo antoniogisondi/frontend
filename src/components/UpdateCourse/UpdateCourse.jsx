@@ -28,6 +28,7 @@ function UpdateCourse() {
     const [newParticipant, setNewParticipant] = useState({
         nome: '',
         cognome: '',
+        codice_fiscale: '',
         email: '',
         data_nascita: '',
         comune_nascita: '',
@@ -83,13 +84,10 @@ function UpdateCourse() {
         if (
             !newParticipant.nome ||
             !newParticipant.cognome ||
-            !newParticipant.email ||
+            !newParticipant.codice_fiscale ||
             !newParticipant.data_nascita ||
             !newParticipant.comune_nascita ||
-            !newParticipant.provincia_comune_nascita ||
-            !newParticipant.mansione ||
-            !newParticipant.azienda ||
-            !newParticipant.partita_iva_azienda
+            !newParticipant.provincia_comune_nascita
         ) {
             alert('Compila tutti i campi del partecipante.');
             return;
@@ -103,6 +101,7 @@ function UpdateCourse() {
         setNewParticipant({
             nome: '',
             cognome: '',
+            codice_fiscale: '',
             email: '',
             data_nascita: '',
             comune_nascita: '',
@@ -160,8 +159,17 @@ function UpdateCourse() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
+        if (courseData.partecipanti.length === 0) {
+            alert('Devi aggiungere almeno un partecipante.');
+            return;
+        }
 
+        if (courseData.durata_corso.length === 0) {
+            alert('Devi aggiungere almeno una durata per il corso.');
+            return;
+        }
+
+        try {
             const preparedData = {
                 ...courseData,
                 partecipanti: courseData.partecipanti.map((p) => {
@@ -267,7 +275,7 @@ function UpdateCourse() {
             <ul>
                 {courseData.partecipanti.map((p, index) => (
                     <li key={index}>
-                        {p.nome} {p.cognome} - {p.email}
+                        {p.nome} {p.cognome} - {p.codice_fiscale}
                         <button
                             type="button"
                             onClick={() => removeParticipant(index)}
@@ -304,6 +312,12 @@ function UpdateCourse() {
             placeholder="Cognome"
             value={newParticipant.cognome}
             onChange={(e) => setNewParticipant({ ...newParticipant, cognome: e.target.value })}
+        />
+        <input
+            type="text"
+            placeholder="Codice Fiscale"
+            value={newParticipant.codice_fiscale}
+            onChange={(e) => setNewParticipant({ ...newParticipant, codice_fiscale: e.target.value })}
         />
         <input
             type="email"

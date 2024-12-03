@@ -1,22 +1,13 @@
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Loader from '../Loader/Loader'
 
 const PrivateRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useContext(AuthContext);
+    const { isAuthenticated } = useAuth();
 
-    // Mostra un loader mentre verifica l'autenticazione
-    if (loading) {
-        return <Loader/>;
-    }
+    return isAuthenticated ? children : <Navigate to="/" />;
 
-    // Se non autenticato, reindirizza alla pagina di login
-    if (!isAuthenticated) {
-        return <Navigate to="/accesso" />;
-    }
-
-    return children;
 };
 
 export default PrivateRoute;

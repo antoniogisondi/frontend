@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import './Header.css'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 
 function Header() {
-    const {isAuthenticated, logout} = useContext(AuthContext)
+    const {isAuthenticated, logout} = useAuth()
     return (
     <header>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">

@@ -3,10 +3,10 @@ import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import './Homepage.css'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext'
 
 function Homepage() {
-  const { isAuthenticated, logout} = useContext(AuthContext)
+  const { isAuthenticated, logout} = useAuth()
   return (
     <>
         <Header/>
@@ -18,6 +18,9 @@ function Homepage() {
                       <h1 className="display-4 mb-4">Benvenuto nella Piattaforma</h1>
                       <p className="lead mb-5">Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.</p>
                       <Link to='/dashboard'>Vai alla dashboard</Link>
+                      <button className="btn btn-link nav-link" onClick={logout}>
+                          Logout
+                      </button>
                     </>
                   ) : (
                     <>

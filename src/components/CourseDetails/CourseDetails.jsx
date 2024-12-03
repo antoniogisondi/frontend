@@ -32,7 +32,7 @@ function CourseDetails() {
     return (
         <div>
             <h2>{course.nome_corso}</h2>
-            <p><strong>Numero Autorizzazione:</strong> {course.numero_autorizzazione}</p>
+            <p><strong>Numero Autorizzazione:</strong> {course.numero_autorizzazione} del {course.data_richiesta}</p>
             <p><strong>Categoria:</strong> {course.categoria_corso}</p>
             <p><strong>Indirizzo:</strong> {course.indirizzo_di_svolgimento}, {course.città_di_svolgimento} ({course.provincia})</p>
 
@@ -61,11 +61,16 @@ function CourseDetails() {
                 <ul>
                     {course.partecipanti.map((p) => (
                         <li key={p._id}>
-                            <strong>{p.nome} {p.cognome}</strong> - {p.email}
+                            <strong>{p.nome} {p.cognome}</strong> - {p.email} - {p.codice_fiscale}
                             <br />
-                            Nato a {p.comune_nascita}, {p.provincia_comune_nascita} il {new Date(p.data_nascita).toLocaleDateString()}
+                            Nato a {p.comune_nascita}, {p.provincia_comune_nascita} il {p.data_nascita}
                             <br />
-                            Mansione: {p.mansione}, Azienda: {p.azienda} (P.IVA: {p.partita_iva_azienda})
+                            {(!p.mansione && !p.azienda && !p.partita_iva_azienda) ? (
+                                <p>Azienda mansione e partita iva non specificati</p>
+                            ) : (
+                                <p>Mansione: {p.mansione}, Azienda: {p.azienda} (P.IVA: {p.partita_iva_azienda})</p>
+                            )}
+                            
                         </li>
                     ))}
                 </ul>

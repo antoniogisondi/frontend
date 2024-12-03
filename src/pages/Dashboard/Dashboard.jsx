@@ -17,6 +17,7 @@ function Dashboard() {
                         <h1 className="display-4 mb-4">Benvenuto nella Dashboard</h1>
                         <p className="lead mb-5">Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.</p>
                         <Link to='/dashboard/corsi'>Vedi i corsi</Link>
+                        <Link to='/dashboard/partecipanti'>Vedi i partecipanti</Link>
                     </>
                     ) : (
                         Navigate('/')
