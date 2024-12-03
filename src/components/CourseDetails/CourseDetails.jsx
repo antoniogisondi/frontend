@@ -38,8 +38,8 @@ function CourseDetails() {
 
             <h3>Durata del Corso</h3>
             <ul>
-                {course.durata_corso.map((d, index) => (
-                    <li key={index}>Giorno: {d.giorno}, Durata Ore: {d.durata_ore}</li>
+                {course.durata_corso.map(({giorno,durata_ore}, index) => (
+                    <li key={index}>Giorno: {new Date(giorno).toLocaleDateString('it-IT', {day: '2-digit', month:'2-digit', year:'numeric'})}, Durata Ore: {durata_ore}</li>
                 ))}
             </ul>
 

@@ -123,6 +123,14 @@ function CreateCourse() {
             return;
         }
 
+        const today = new Date().setHours(0,0,0,0)
+        const selectedDate = new Date(durationDay.giorno).setHours(0,0,0,0)
+
+        if (selectedDate <= today) {
+            alert('La data selezionata deve essere maggiore della data odierna')
+            return
+        }
+
         setCourseData((prev) => ({
             ...prev,
             durata_corso: [...prev.durata_corso, durationDay],

@@ -25,16 +25,16 @@ function GetAllParticipants() {
         fetchParticipants();
     }, []);
 
-    const handleDelete = async (participant) => {
+    const handleDelete = async (participantId) => {
         const confirm = window.confirm(
-            `Sei sicuro di voler eliminare il partecipante ${participant.nome} ${participant.cognome}?`
+            `Sei sicuro di voler eliminare il partecipante?`
         );
 
         if (confirm) {
             try {
-                await deleteParticipant(participant._id);
+                await deleteParticipant(participantId);
                 alert('Partecipante eliminato con successo');
-                setParticipants((prev) => prev.filter((participant) => participant._id !== id));      
+                setParticipants((prev) => prev.filter((participant) => participant._id !== participantId));      
                 navigate('/dashboard/partecipanti')
             } catch (err) {
                 console.error('Errore durante l\'eliminazione del partecipante:', err);

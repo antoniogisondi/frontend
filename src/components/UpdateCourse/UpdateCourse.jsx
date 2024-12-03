@@ -147,6 +147,14 @@ function UpdateCourse() {
             return;
         }
 
+        const today = new Date().setHours(0,0,0,0)
+        const selectedDate = new Date(durationDay.giorno).setHours(0,0,0,0)
+
+        if (selectedDate <= today) {
+            alert('La data selezionata deve essere maggiore della data odierna')
+            return
+        }
+
         setCourseData((prev) => ({
             ...prev,
             durata_corso: [...prev.durata_corso, durationDay],
@@ -158,7 +166,6 @@ function UpdateCourse() {
     // Gestisce l'invio del modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (courseData.partecipanti.length === 0) {
             alert('Devi aggiungere almeno un partecipante.');
             return;
@@ -178,9 +185,9 @@ function UpdateCourse() {
                     }
 
                     return p
-                })
-            }
-            await updateCourse(id, courseData);
+                })}
+
+            await updateCourse(id, preparedData);
             alert('Corso aggiornato con successo!');
             navigate(`/dashboard/corsi/${id}`);
         } catch (err) {
@@ -348,51 +355,25 @@ function UpdateCourse() {
             value={newParticipant.mansione}
             onChange={(e) => setNewParticipant({ ...newParticipant, mansione: e.target.value })}
         />
-        <input
-            type="text"
-            placeholder="Azienda"
-            value={newParticipant.azienda}
-            onChange={(e) => setNewParticipant({ ...newParticipant, azienda: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Partita IVA Azienda"
-            value={newParticipant.partita_iva_azienda}
-            onChange={(e) => setNewParticipant({ ...newParticipant, partita_iva_azienda: e.target.value })}
-        />
+        <input            type="text"            placeholder="Azienda"            value={newParticipant.azienda}            onChange={(e) => setNewParticipant({ ...newParticipant, azienda: e.target.value })}        />
+        <input            type="text"            placeholder="Partita IVA Azienda"            value={newParticipant.partita_iva_azienda}            onChange={(e) => setNewParticipant({ ...newParticipant, partita_iva_azienda: e.target.value })}        />
         <button type="button" onClick={addNewParticipant}>Aggiungi Partecipante</button>
 
             {/* Durata del corso */}
             <h3>Durata del Corso</h3>
             <ul>
-                {courseData.durata_corso.map((item, index) => (
+                {courseData.durata_corso.map(({ giorno, durata_ore }, index) => (
                     <li key={index}>
-                        Giorno: {item.giorno}, Durata Ore: {item.durata_ore}
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setCourseData((prev) => ({
-                                    ...prev,
-                                    durata_corso: prev.durata_corso.filter((_, i) => i !== index),
-                                }));
-                            }}
-                        >
+                        Giorno: {new Date(giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}, 
+                        Durata Ore: {durata_ore}
+                        <button type="button" onClick={() => {setCourseData((prev) => ({...prev, durata_corso: prev.durata_corso.filter((_, i) => i !== index)}))}}>
                             Elimina
                         </button>
                     </li>
                 ))}
             </ul>
-            <input
-                type="date"
-                value={durationDay.giorno}
-                onChange={(e) => setDurationDay({ ...durationDay, giorno: e.target.value })}
-            />
-            <input
-                type="number"
-                placeholder="Durata in ore"
-                value={durationDay.durata_ore}
-                onChange={(e) => setDurationDay({ ...durationDay, durata_ore: e.target.value })}
-            />
+            <input type="date" value={durationDay.giorno} onChange={(e) => setDurationDay({ ...durationDay, giorno: e.target.value })}/>
+            <input type="number" placeholder="Durata in ore" value={durationDay.durata_ore} onChange={(e) => setDurationDay({ ...durationDay, durata_ore: e.target.value })}/>
             <button type="button" onClick={addDurationDay}>
                 Aggiungi Data
             </button>
