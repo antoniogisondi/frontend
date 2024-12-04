@@ -8,6 +8,7 @@ const API = axios.create({
 // Invio i dati al backend per login e registrazione
 export const registerUser = (userData) => API.post('/auth/register', userData)
 export const loginUser = (userData) => API.post('/auth/login', userData)
+export const loginParticipant = (participantData) => API.post('/auth/participant-login', participantData)
 
 // Gestisco il token nel local storage
 API.interceptors.request.use((config) => {
