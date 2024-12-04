@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Loader from '../Loader/Loader';
 import { createCourse, getAllParticipants } from '../../services/courseService';
 import courses from '../../services/courses';
 import './CreateCourse.css';
 
 function CreateCourse() {
+
+    // Inizializzo gli stati 
     const [selectedCourse, setSelectedCourse] = useState('');
     const [courseData, setCourseData] = useState({
         nome_corso: '',
@@ -18,7 +21,6 @@ function CreateCourse() {
         programma_corso: [],
         partecipanti: []
     });
-
     const [partecipante, setPartecipante] = useState({
         nome: '',
         cognome: '',
@@ -31,19 +33,23 @@ function CreateCourse() {
         azienda: '',
         partita_iva_azienda: '',
     });
-
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
     const [allParticipants, setAllParticipants] = useState([]);
     const [selectedParticipantId, setSelectedParticipantId] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    // utilizzo lo useEffect per montare i partecipanti 
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
                 const participants = await getAllParticipants();
                 setAllParticipants(participants);
+                setLoading(false)
             } catch (error) {
                 console.error('Errore durante il recupero dei partecipanti:', error);
-                alert('Errore durante il recupero dei partecipanti.');
+                setError('Errore durante il recupero dei partecipanti')
+                setLoading(false)
             }
         };
 
@@ -64,6 +70,7 @@ function CreateCourse() {
         setCourseData({ ...courseData, [e.target.name]: e.target.value });
     };
 
+    // Funzione per aggiungere i partecipanti
     const addPartecipante = () => {
         if (!partecipante.nome || !partecipante.cognome || !partecipante.data_nascita || !partecipante.codice_fiscale) {
             alert('Compila tutti i campi richiesti del partecipante.');
@@ -89,6 +96,7 @@ function CreateCourse() {
         });
     };
 
+    // Funzione per aggiungere un partecipante esistente da una lista
     const addExistingParticipant = () => {
         const participant = allParticipants.find((p) => p._id === selectedParticipantId);
 
@@ -110,6 +118,7 @@ function CreateCourse() {
         setSelectedParticipantId('');
     };
 
+    // Funzione per rimuovere il partecipante
     const removeParticipant = (index) => {
         setCourseData((prev) => ({
             ...prev,
@@ -117,6 +126,7 @@ function CreateCourse() {
         }));
     };
 
+    // Funzione per aggiungere la durata del corso
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
             alert('Compila sia il giorno che la durata in ore.');
@@ -139,6 +149,7 @@ function CreateCourse() {
         setDurationDay({ giorno: '', durata_ore: '' });
     };
 
+    // Funzione per rimuovere la durata del corso
     const removeDurationDay = (index) => {
         setCourseData((prev) => ({
             ...prev,
@@ -146,12 +157,12 @@ function CreateCourse() {
         }));
     };
 
+    // Funzione per sottomettere la form ed inviare i dati
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await createCourse(courseData);
             alert('Corso creato con successo!');
-            console.log(response);
             setCourseData({
                 nome_corso: '',
                 indirizzo_di_svolgimento: '',
@@ -171,27 +182,21 @@ function CreateCourse() {
         }
     };
 
+    // Caricamento o errore
+    if (loading) return <div><Loader/></div>;
+    if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
     return (
         <div className="container my-5">
             <h2 className="mb-4 text-center">Crea Nuovo Corso</h2>
             <form onSubmit={handleSubmit}>
                 {/* Nome del Corso */}
                 <div className="mb-3">
-                    <label htmlFor="courseSelect" className="form-label">
-                        Nome del Corso
-                    </label>
-                    <select
-                        id="courseSelect"
-                        value={selectedCourse}
-                        onChange={handleCourseSelect}
-                        className="form-select"
-                        required
-                    >
+                    <label htmlFor="courseSelect" className="form-label">Nome del Corso</label>
+                    <select id="courseSelect" value={selectedCourse} onChange={handleCourseSelect} className="form-select" required>
                         <option value="">Seleziona un corso</option>
                         {courses.map((course, index) => (
-                            <option key={index} value={course.nome_corso}>
-                                {course.nome_corso}
-                            </option>
+                            <option key={index} value={course.nome_corso}>{course.nome_corso}</option>
                         ))}
                     </select>
                 </div>
@@ -207,18 +212,8 @@ function CreateCourse() {
                     { name: 'categoria_corso', label: 'Categoria del Corso', type: 'text' },
                 ].map(({ name, label, type }) => (
                     <div className="mb-3" key={name}>
-                        <label htmlFor={name} className="form-label">
-                            {label}
-                        </label>
-                        <input
-                            id={name}
-                            name={name}
-                            type={type}
-                            value={courseData[name]}
-                            onChange={handleChange}
-                            className="form-control"
-                            required
-                        />
+                        <label htmlFor={name} className="form-label">{label}</label>
+                        <input id={name} name={name} type={type} value={courseData[name]} onChange={handleChange} className="form-control" required/>
                     </div>
                 ))}
 
@@ -244,29 +239,14 @@ function CreateCourse() {
 
                 {/* Aggiungi Partecipante Esistente */}
                 <div className="mb-3">
-                    <label htmlFor="existingParticipant" className="form-label">
-                        Aggiungi Partecipante Esistente
-                    </label>
-                    <select
-                        id="existingParticipant"
-                        value={selectedParticipantId}
-                        onChange={(e) => setSelectedParticipantId(e.target.value)}
-                        className="form-select"
-                    >
+                    <label htmlFor="existingParticipant" className="form-label">Aggiungi Partecipante Esistente</label>
+                    <select id="existingParticipant" value={selectedParticipantId} onChange={(e) => setSelectedParticipantId(e.target.value)} className="form-select">
                         <option value="">Seleziona un partecipante</option>
                         {allParticipants.map((p) => (
-                            <option key={p._id} value={p._id}>
-                                {p.nome} {p.cognome}
-                            </option>
+                            <option key={p._id} value={p._id}>{p.nome} {p.cognome}</option>
                         ))}
                     </select>
-                    <button
-                        type="button"
-                        onClick={addExistingParticipant}
-                        className="btn btn-outline-primary mt-2"
-                    >
-                        Aggiungi
-                    </button>
+                    <button type="button" onClick={addExistingParticipant} className="btn btn-outline-primary mt-2">Aggiungi</button>
                 </div>
 
                 {/* Aggiungi Nuovo Partecipante */}
@@ -284,70 +264,34 @@ function CreateCourse() {
                     { name: 'partita_iva_azienda', label: 'Partita IVA Azienda', type: 'text' },
                 ].map(({ name, label, type }) => (
                     <div className="mb-3" key={name}>
-                        <label htmlFor={name} className="form-label">
-                            {label}
-                        </label>
-                        <input
-                            id={name}
-                            name={name}
-                            type={type}
-                            value={partecipante[name]}
-                            onChange={(e) => setPartecipante({ ...partecipante, [name]: e.target.value })}
-                            className="form-control"
-                        />
+                        <label htmlFor={name} className="form-label">{label}</label>
+                        <input id={name} name={name} type={type} value={partecipante[name]} onChange={(e) => setPartecipante({ ...partecipante, [name]: e.target.value })} className="form-control"/>
                     </div>
                 ))}
-                <button
-                    type="button"
-                    onClick={addPartecipante}
-                    className="btn btn-outline-secondary mb-4"
-                >
-                    Aggiungi Partecipante
-                </button>
+                <button type="button" onClick={addPartecipante} className="btn btn-outline-secondary mb-4">Aggiungi Partecipante</button>
 
                 {/* Durata del Corso */}
                 <h3>Durata del Corso</h3>
                 <ul>
-                    {courseData.durata_corso.map((item, index) => (
+                    {courseData.durata_corso.map(({giorno, durata_ore}, index) => (
                         <li key={index}>
-                            Giorno: {item.giorno}, Durata Ore: {item.durata_ore}
+                            Giorno: {new Date(giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}, 
+                            Durata Ore: {durata_ore}
                             <button type='button' className='btn btn-danger btn-sm' onClick={() => removeDurationDay(index)}>Rimuovi</button>
                         </li>
                     ))}
                 </ul>
                 <div className="mb-3">
-                    <label htmlFor="giorno" className="form-label">
-                        Giorno
-                    </label>
-                    <input
-                        id="giorno"
-                        name="giorno"
-                        type="date"
-                        value={durationDay.giorno}
-                        onChange={(e) => setDurationDay({ ...durationDay, giorno: e.target.value })}
-                        className="form-control"
-                    />
+                    <label htmlFor="giorno" className="form-label">Giorno</label>
+                    <input id="giorno" name="giorno" type="date" value={durationDay.giorno} onChange={(e) => setDurationDay({ ...durationDay, giorno: e.target.value })} className="form-control"/>
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="durata_ore" className="form-label">
-                        Durata (Ore)
-                    </label>
-                    <input
-                        id="durata_ore"
-                        name="durata_ore"
-                        type="number"
-                        value={durationDay.durata_ore}
-                        onChange={(e) => setDurationDay({ ...durationDay, durata_ore: e.target.value })}
-                        className="form-control"
-                    />
+                    <label htmlFor="durata_ore" className="form-label"> Durata (Ore) </label>
+                    <input id="durata_ore" name="durata_ore" type="number" value={durationDay.durata_ore} onChange={(e) => setDurationDay({ ...durationDay, durata_ore: e.target.value })} className="form-control"/>
                 </div>
-                <button type="button" onClick={addDurationDay} className="btn btn-outline-primary mb-3">
-                    Aggiungi Data
-                </button>
+                <button type="button" onClick={addDurationDay} className="btn btn-outline-primary mb-3">Aggiungi Data</button>
 
-                <button type="submit" className="btn btn-primary w-100">
-                    Crea Corso
-                </button>
+                <button type="submit" className="btn btn-primary w-100">Crea Corso</button>
             </form>
         </div>
     );

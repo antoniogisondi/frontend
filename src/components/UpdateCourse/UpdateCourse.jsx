@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import Loader from '../Loader/Loader'
 import { useParams, useNavigate } from 'react-router-dom';
 import { getCourseDetails, updateCourse, getAllParticipants } from '../../services/courseService';
 import courses from '../../services/courses'
 import './UpdateCourse.css';
 
 function UpdateCourse() {
+    // Recupero i paramentri nell'url
     const { id } = useParams();
     const navigate = useNavigate();
 
+    // Inizializzo gli stati degli input
     const [courseData, setCourseData] = useState({
         nome_corso: '',
         indirizzo_di_svolgimento: '',
@@ -22,8 +25,7 @@ function UpdateCourse() {
         partecipanti: []
     });
     const [selectedCourse, setSelectedCourse] = useState('');
-
-    const [participants, setParticipants] = useState([]); // Lista di tutti i partecipanti esistenti
+    const [participants, setParticipants] = useState([]); 
     const [selectedParticipant, setSelectedParticipant] = useState('');
     const [newParticipant, setNewParticipant] = useState({
         nome: '',
@@ -37,12 +39,11 @@ function UpdateCourse() {
         azienda: '',
         partita_iva_azienda: '',
     });
-
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Recupera i dettagli del corso
+    // Recupera i dettagli del corso e li renderizzo
     useEffect(() => {
         const fetchCourse = async () => {
             try {
@@ -112,6 +113,7 @@ function UpdateCourse() {
         });
     };
 
+    // Funzione per rimuovere i partecipanti
     const removeParticipant = (index) => {
         setCourseData((prev) => ({
             ...prev,
@@ -119,6 +121,7 @@ function UpdateCourse() {
         }));
     };
 
+    // Funzione per aggiungere un partecipante esistente 
     const addExistingParticipant = () => {
         if (!selectedParticipant) {
             alert('Seleziona un partecipante da aggiungere.');
@@ -197,187 +200,74 @@ function UpdateCourse() {
     };
 
     // Caricamento o errore
-    if (loading) return <p>Caricamento in corso...</p>;
+    if (loading) return <div><Loader/></div>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
-            {/* Campi del corso */}
-            <label>
-                Nome del Corso:
+            {/* Input dei corsi */}
+            <label>Nome del Corso:
                 <select value={selectedCourse} onChange={handleCourseSelect} required>
                     <option value="">Seleziona un corso</option>
                     {courses.map((course, index) => (
-                        <option key={index} value={course.nome_corso}>
-                            {course.nome_corso}
-                        </option>
+                    <option key={index} value={course.nome_corso}>{course.nome_corso}</option>
                     ))}
                 </select>
             </label>
+            <input type="text" name="indirizzo_di_svolgimento" placeholder="Indirizzo di svolgimento" value={courseData.indirizzo_di_svolgimento} onChange={handleChange} required/>
+            <input type="number" name="cap_sede_corso" placeholder="CAP sede corso" value={courseData.cap_sede_corso} onChange={handleChange} required/>
+            <input type="text" name="città_di_svolgimento" placeholder="Città di svolgimento" value={courseData.città_di_svolgimento} onChange={handleChange} required/>
+            <input type="text" name="provincia" placeholder="Provincia" value={courseData.provincia} onChange={handleChange} required/>
+            <input type="text" name="direttore_corso" placeholder="Direttore del corso" value={courseData.direttore_corso} onChange={handleChange} required/>
+            <input type="text" name="docente_corso" placeholder="Docente del corso"  value={courseData.docente_corso} onChange={handleChange} required/>
+            <input type="text" name="categoria_corso" placeholder="Categoria del corso" value={courseData.categoria_corso} onChange={handleChange} required/>
 
-            <input
-                type="text"
-                name="indirizzo_di_svolgimento"
-                placeholder="Indirizzo di svolgimento"
-                value={courseData.indirizzo_di_svolgimento}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="number"
-                name="cap_sede_corso"
-                placeholder="CAP sede corso"
-                value={courseData.cap_sede_corso}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="text"
-                name="città_di_svolgimento"
-                placeholder="Città di svolgimento"
-                value={courseData.città_di_svolgimento}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="text"
-                name="provincia"
-                placeholder="Provincia"
-                value={courseData.provincia}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="text"
-                name="direttore_corso"
-                placeholder="Direttore del corso"
-                value={courseData.direttore_corso}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="text"
-                name="docente_corso"
-                placeholder="Docente del corso"
-                value={courseData.docente_corso}
-                onChange={handleChange}
-                required
-            />
-
-            <input
-                type="text"
-                name="categoria_corso"
-                placeholder="Categoria del corso"
-                value={courseData.categoria_corso}
-                onChange={handleChange}
-                required
-            />
-
+            {/* Input dei partecipanti */}
             <h3>Partecipanti</h3>
             <ul>
                 {courseData.partecipanti.map((p, index) => (
                     <li key={index}>
                         {p.nome} {p.cognome} - {p.codice_fiscale}
-                        <button
-                            type="button"
-                            onClick={() => removeParticipant(index)}
-                        >
-                            Rimuovi
-                        </button>
+                        <button type="button" onClick={() => removeParticipant(index)}>Rimuovi</button>
                     </li>
                 ))}
             </ul>
-
-            <select
-                value={selectedParticipant}
-                onChange={(e) => setSelectedParticipant(e.target.value)}
-            >
+            <select value={selectedParticipant} onChange={(e) => setSelectedParticipant(e.target.value)}>
                 <option value="">Seleziona un partecipante</option>
                 {participants.map((p) => (
-                    <option key={p._id} value={p._id}>
-                        {p.nome} {p.cognome}
-                    </option>
+                    <option key={p._id} value={p._id}>{p.nome} {p.cognome}</option>
                 ))}
             </select>
-            <button type="button" onClick={addExistingParticipant}>
-                Aggiungi Partecipante Esistente
-            </button>
+            <button type="button" onClick={addExistingParticipant}>Aggiungi Partecipante Esistente</button>
 
-            <input
-            type="text"
-            placeholder="Nome"
-            value={newParticipant.nome}
-            onChange={(e) => setNewParticipant({ ...newParticipant, nome: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Cognome"
-            value={newParticipant.cognome}
-            onChange={(e) => setNewParticipant({ ...newParticipant, cognome: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Codice Fiscale"
-            value={newParticipant.codice_fiscale}
-            onChange={(e) => setNewParticipant({ ...newParticipant, codice_fiscale: e.target.value })}
-        />
-        <input
-            type="email"
-            placeholder="Email"
-            value={newParticipant.email}
-            onChange={(e) => setNewParticipant({ ...newParticipant, email: e.target.value })}
-        />
-        <input
-            type="date"
-            value={newParticipant.data_nascita}
-            onChange={(e) => setNewParticipant({ ...newParticipant, data_nascita: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Comune di Nascita"
-            value={newParticipant.comune_nascita}
-            onChange={(e) => setNewParticipant({ ...newParticipant, comune_nascita: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Provincia Comune di Nascita"
-            value={newParticipant.provincia_comune_nascita}
-            onChange={(e) => setNewParticipant({ ...newParticipant, provincia_comune_nascita: e.target.value })}
-        />
-        <input
-            type="text"
-            placeholder="Mansione"
-            value={newParticipant.mansione}
-            onChange={(e) => setNewParticipant({ ...newParticipant, mansione: e.target.value })}
-        />
-        <input            type="text"            placeholder="Azienda"            value={newParticipant.azienda}            onChange={(e) => setNewParticipant({ ...newParticipant, azienda: e.target.value })}        />
-        <input            type="text"            placeholder="Partita IVA Azienda"            value={newParticipant.partita_iva_azienda}            onChange={(e) => setNewParticipant({ ...newParticipant, partita_iva_azienda: e.target.value })}        />
-        <button type="button" onClick={addNewParticipant}>Aggiungi Partecipante</button>
+            <input type="text" placeholder="Nome" value={newParticipant.nome} onChange={(e) => setNewParticipant({ ...newParticipant, nome: e.target.value })}/>
+            <input type="text" placeholder="Cognome" value={newParticipant.cognome} onChange={(e) => setNewParticipant({ ...newParticipant, cognome: e.target.value })} />
+            <input type="text" placeholder="Codice Fiscale" value={newParticipant.codice_fiscale} onChange={(e) => setNewParticipant({ ...newParticipant, codice_fiscale: e.target.value })}/>
+            <input type="email" placeholder="Email" value={newParticipant.email} onChange={(e) => setNewParticipant({ ...newParticipant, email: e.target.value })}/>
+            <input type="date" value={newParticipant.data_nascita} onChange={(e) => setNewParticipant({ ...newParticipant, data_nascita: e.target.value })}/>
+            <input type="text" placeholder="Comune di Nascita" value={newParticipant.comune_nascita} onChange={(e) => setNewParticipant({ ...newParticipant, comune_nascita: e.target.value })}/>
+            <input type="text" placeholder="Provincia Comune di Nascita" value={newParticipant.provincia_comune_nascita} onChange={(e) => setNewParticipant({ ...newParticipant, provincia_comune_nascita: e.target.value })}/>
+            <input type="text" placeholder="Mansione" value={newParticipant.mansione} onChange={(e) => setNewParticipant({ ...newParticipant, mansione: e.target.value })}/>
+            <input type="text" placeholder="Azienda" value={newParticipant.azienda} onChange={(e) => setNewParticipant({ ...newParticipant, azienda: e.target.value })}/>
+            <input type="text" placeholder="Partita IVA Azienda" value={newParticipant.partita_iva_azienda} onChange={(e) => setNewParticipant({ ...newParticipant, partita_iva_azienda: e.target.value })}/>
+            <button type="button" onClick={addNewParticipant}>Aggiungi Partecipante</button>
 
-            {/* Durata del corso */}
+            {/* Input durata del corso */}
             <h3>Durata del Corso</h3>
             <ul>
                 {courseData.durata_corso.map(({ giorno, durata_ore }, index) => (
                     <li key={index}>
                         Giorno: {new Date(giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}, 
                         Durata Ore: {durata_ore}
-                        <button type="button" onClick={() => {setCourseData((prev) => ({...prev, durata_corso: prev.durata_corso.filter((_, i) => i !== index)}))}}>
-                            Elimina
-                        </button>
+                        <button type="button" onClick={() => {setCourseData((prev) => ({...prev, durata_corso: prev.durata_corso.filter((_, i) => i !== index)}))}}>Elimina</button>
                     </li>
                 ))}
             </ul>
             <input type="date" value={durationDay.giorno} onChange={(e) => setDurationDay({ ...durationDay, giorno: e.target.value })}/>
             <input type="number" placeholder="Durata in ore" value={durationDay.durata_ore} onChange={(e) => setDurationDay({ ...durationDay, durata_ore: e.target.value })}/>
-            <button type="button" onClick={addDurationDay}>
-                Aggiungi Data
-            </button>
+            <button type="button" onClick={addDurationDay}>Aggiungi Data</button>
 
+            {/* Programma del corso selezionato */}
             <h3>Programma del Corso</h3>
             <ul>
                 {courseData.programma_corso.map((modulo, index) => (
