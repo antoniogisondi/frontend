@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { getAllCourses, deleteCourse } from '../../services/courseService'
 import { Link } from 'react-router-dom';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import './ShowCourses.css'
 
 function ShowCourses() {
@@ -42,6 +44,7 @@ function ShowCourses() {
 
     return (
         <div>
+            <Header/>
             <Link to='/dashboard/crea-corso'>Crea un corso</Link>
             <h2>Elenco dei Corsi</h2>
             {courses.length === 0 ? ( // Controlla se la lista è vuota
@@ -65,6 +68,7 @@ function ShowCourses() {
                     ))}
                 </ul>
             )}
+            <Footer/>
         </div>
     );
 };
