@@ -2,6 +2,7 @@ import React, {useState, useContext} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loginParticipant } from '../../services/api'
 import { useParticipantAuth } from '../../context/ParticipantAuthContext'
+import Loader from '../../components/Loader/Loader'
 
 function LoginParticipantPage() {
     const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ function LoginParticipantPage() {
         codice_fiscale:''
     })
     const [error, setError] = useState('')
-    const [loading, setLoading] = useState('')
+    const [loading, setLoading] = useState(false)
     const {loginP} = useParticipantAuth()
     const navigate = useNavigate()
 
@@ -20,14 +21,22 @@ function LoginParticipantPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setLoading(true)
+        setError('')
         try {
             const {data} = await loginParticipant(formData)
-            loginP(data.token)
-            //localStorage.setItem('participantToken', data.token)
+            loginP(data.token, data.participant)
             navigate('/participant-dashboard')
         } catch (error) {
             setError(error.response?.data?.message || 'Errore durante il login');
+        } finally {
+            setLoading(false)
         }
+    }
+    if (loading) {
+        return <div className="container-fluid">
+            <Loader/>
+        </div>
     }
     return (
         <div>

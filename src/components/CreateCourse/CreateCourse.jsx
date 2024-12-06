@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Loader from '../Loader/Loader';
 import { createCourse, getAllParticipants } from '../../services/courseService';
 import courses from '../../services/courses';
 import './CreateCourse.css';
 
 function CreateCourse() {
-
+    const navigate = useNavigate()
     // Inizializzo gli stati 
     const [selectedCourse, setSelectedCourse] = useState('');
     const [courseData, setCourseData] = useState({
@@ -45,10 +46,10 @@ function CreateCourse() {
             try {
                 const participants = await getAllParticipants();
                 setAllParticipants(participants);
-                setLoading(false)
             } catch (error) {
                 console.error('Errore durante il recupero dei partecipanti:', error);
                 setError('Errore durante il recupero dei partecipanti')
+            } finally {
                 setLoading(false)
             }
         };
@@ -73,7 +74,7 @@ function CreateCourse() {
     // Funzione per aggiungere i partecipanti
     const addPartecipante = () => {
         if (!partecipante.nome || !partecipante.cognome || !partecipante.data_nascita || !partecipante.codice_fiscale) {
-            alert('Compila tutti i campi richiesti del partecipante.');
+            setError('Compila tutti i campi richiesti del partecipante.');
             return;
         }
 
@@ -94,6 +95,7 @@ function CreateCourse() {
             azienda: '',
             partita_iva_azienda: '',
         });
+        setError(null)
     };
 
     // Funzione per aggiungere un partecipante esistente da una lista
@@ -101,12 +103,12 @@ function CreateCourse() {
         const participant = allParticipants.find((p) => p._id === selectedParticipantId);
 
         if (!participant) {
-            alert('Seleziona un partecipante valido.');
+            setError('Seleziona un partecipante valido.');
             return;
         }
 
         if (courseData.partecipanti.some((p) => p._id === participant._id)) {
-            alert('Il partecipante è già associato a questo corso.');
+            setError('Il partecipante è già associato a questo corso.');
             return;
         }
 
@@ -116,6 +118,7 @@ function CreateCourse() {
         }));
 
         setSelectedParticipantId('');
+        setError(null)
     };
 
     // Funzione per rimuovere il partecipante
@@ -129,7 +132,7 @@ function CreateCourse() {
     // Funzione per aggiungere la durata del corso
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
-            alert('Compila sia il giorno che la durata in ore.');
+            setError('Compila sia il giorno che la durata in ore.');
             return;
         }
 
@@ -137,7 +140,7 @@ function CreateCourse() {
         const selectedDate = new Date(durationDay.giorno).setHours(0,0,0,0)
 
         if (selectedDate <= today) {
-            alert('La data selezionata deve essere maggiore della data odierna')
+            setError('La data selezionata deve essere maggiore della data odierna')
             return
         }
 
@@ -147,6 +150,7 @@ function CreateCourse() {
         }));
 
         setDurationDay({ giorno: '', durata_ore: '' });
+        setError(null)
     };
 
     // Funzione per rimuovere la durata del corso
@@ -160,9 +164,9 @@ function CreateCourse() {
     // Funzione per sottomettere la form ed inviare i dati
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null)
         try {
             const response = await createCourse(courseData);
-            alert('Corso creato con successo!');
             setCourseData({
                 nome_corso: '',
                 indirizzo_di_svolgimento: '',
@@ -176,19 +180,22 @@ function CreateCourse() {
                 programma_corso: [],
                 partecipanti: [],
             });
+            setLoading(true)
+            navigate('/dashboard/corsi')
         } catch (error) {
-            console.error('Errore durante la creazione del corso:', error);
-            alert('Errore durante la creazione del corso.');
+            setError('Errore durante la creazione del corso.');
+        } finally {
+            setLoading(false)
         }
     };
 
     // Caricamento o errore
     if (loading) return <div><Loader/></div>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <div className="container my-5">
             <h2 className="mb-4 text-center">Crea Nuovo Corso</h2>
+            {error && <p style={{color: 'red'}}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 {/* Nome del Corso */}
                 <div className="mb-3">

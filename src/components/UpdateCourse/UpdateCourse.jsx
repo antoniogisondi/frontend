@@ -41,7 +41,8 @@ function UpdateCourse() {
     });
     const [durationDay, setDurationDay] = useState({ giorno: '', durata_ore: '' });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     // Recupera i dettagli del corso e li renderizzo
     useEffect(() => {
@@ -54,8 +55,8 @@ function UpdateCourse() {
                 setParticipants(participantsList);
                 setLoading(false);
             } catch (error) {
-                console.error('Errore durante il recupero del corso:', error);
                 setError('Errore durante il recupero del corso.');
+            } finally {
                 setLoading(false);
             }
         };
@@ -90,7 +91,7 @@ function UpdateCourse() {
             !newParticipant.comune_nascita ||
             !newParticipant.provincia_comune_nascita
         ) {
-            alert('Compila tutti i campi del partecipante.');
+            setError('Compila tutti i campi del partecipante.');
             return;
         }
 
@@ -111,6 +112,8 @@ function UpdateCourse() {
             azienda: '',
             partita_iva_azienda: '',
         });
+        setError('')
+        setSuccess('Partecipante aggiunto con successo')
     };
 
     // Funzione per rimuovere i partecipanti
@@ -119,19 +122,20 @@ function UpdateCourse() {
             ...prev,
             partecipanti: prev.partecipanti.filter((_, i) => i !== index),
         }));
+        setSuccess('Partecipante rimosso con successo!');
     };
 
     // Funzione per aggiungere un partecipante esistente 
     const addExistingParticipant = () => {
         if (!selectedParticipant) {
-            alert('Seleziona un partecipante da aggiungere.');
+            setError('Seleziona un partecipante da aggiungere.');
             return;
         }
 
         const participantToAdd = participants.find((p) => p._id === selectedParticipant);
 
         if (!participantToAdd) {
-            alert('Partecipante non valido.');
+            setError('Partecipante non valido.');
             return;
         }
 
@@ -141,12 +145,14 @@ function UpdateCourse() {
         }));
 
         setSelectedParticipant('');
+        setError('');
+        setSuccess('Partecipante esistente aggiunto con successo!');
     };
 
     // Aggiunge un giorno alla durata del corso
     const addDurationDay = () => {
         if (!durationDay.giorno || !durationDay.durata_ore) {
-            alert('Compila sia il giorno che la durata in ore.');
+            setError('Compila sia il giorno che la durata in ore.');
             return;
         }
 
@@ -154,7 +160,7 @@ function UpdateCourse() {
         const selectedDate = new Date(durationDay.giorno).setHours(0,0,0,0)
 
         if (selectedDate <= today) {
-            alert('La data selezionata deve essere maggiore della data odierna')
+            setError('La data selezionata deve essere maggiore della data odierna')
             return
         }
 
@@ -164,18 +170,26 @@ function UpdateCourse() {
         }));
 
         setDurationDay({ giorno: '', durata_ore: '' });
+        setError('');
+        setSuccess('Durata aggiunta con successo!');
     };
 
     // Gestisce l'invio del modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
+        setError('')
+        setSuccess('');
+
         if (courseData.partecipanti.length === 0) {
-            alert('Devi aggiungere almeno un partecipante.');
+            setError('Devi aggiungere almeno un partecipante.');
+            setLoading(false);
             return;
         }
 
         if (courseData.durata_corso.length === 0) {
-            alert('Devi aggiungere almeno una durata per il corso.');
+            setError('Devi aggiungere almeno una durata per il corso.');
+            setLoading(false);
             return;
         }
 
@@ -191,20 +205,22 @@ function UpdateCourse() {
                 })}
 
             await updateCourse(id, preparedData);
-            alert('Corso aggiornato con successo!');
+            setSuccess('Corso aggiornato con successo!');
             navigate(`/dashboard/corsi/${id}`);
         } catch (err) {
-            console.error('Errore durante la modifica del corso:', err);
-            alert('Errore durante la modifica del corso.');
+            setError('Errore durante la modifica del corso.')
+        } finally {
+            setLoading(false)
         }
     };
 
     // Caricamento o errore
     if (loading) return <div><Loader/></div>;
-    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <form onSubmit={handleSubmit}>
+            {error && <p style={{color: 'red'}}>{error}</p>}
+            {success && <p style={{ color: 'green' }}>{success}</p>}
             {/* Input dei corsi */}
             <label>Nome del Corso:
                 <select value={selectedCourse} onChange={handleCourseSelect} required>

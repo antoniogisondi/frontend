@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useState } from 'react'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import './Homepage.css'
@@ -10,6 +10,20 @@ import { useParticipantAuth } from '../../context/ParticipantAuthContext'
 function Homepage() {
   const { isAuthenticated, logout} = useAuth()
   const { isAuthenticatedP, logoutP} = useParticipantAuth()
+  const [loading, setLoading] = useState(false)
+
+  const handleLogout = async () => {
+    setLoading(true);
+    await logout();
+    setLoading(false);
+  };
+
+  const handleLogoutP = async () => {
+    setLoading(true);
+    await logoutP();
+    setLoading(false);
+  };
+
   return (
     <>
         <Header/>
@@ -21,7 +35,7 @@ function Homepage() {
                       <h1 className="display-4 mb-4">Benvenuto nella Piattaforma</h1>
                       <p className="lead mb-5">Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.</p>
                       <Link to='/dashboard'>Vai alla dashboard</Link>
-                      <button className="btn btn-link nav-link" onClick={logout}>
+                      <button className="btn btn-link nav-link" onClick={handleLogout}>
                           Logout
                       </button>
                     </>
@@ -30,7 +44,7 @@ function Homepage() {
                       <h1 className="display-4 mb-4">Benvenuto nella Piattaforma</h1>
                       <p className="lead mb-5">Gestisci i tuoi corsi in modo semplice ed efficace.</p>
                       <Link to='/participant-dashboard'>Vai alla dashboard</Link>
-                      <button className="btn btn-link nav-link" onClick={logoutP}>
+                      <button className="btn btn-link nav-link" onClick={handleLogoutP}>
                           Logout
                       </button>
                     </>

@@ -77,6 +77,7 @@ function CourseDetails() {
             ) : (
                 <p>Nessun partecipante registrato.</p>
             )}
+            <h4>{course.status}</h4>
         </div>
     );
 }
