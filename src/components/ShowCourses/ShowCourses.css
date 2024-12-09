@@ -1,0 +1,44 @@
+.show-courses-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.filters-section label {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.filters-section input {
+    border-radius: 5px;
+}
+
+.filters-section .btn {
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.status-summary div h4 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.status-summary div p {
+    color: #6c757d;
+}
+
+.courses-list .list-title {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.table-bordered th, .table-bordered td {
+    vertical-align: middle;
+}
+
+.table-bordered td.text-center i {
+    font-size: 1.2rem;
+}
+

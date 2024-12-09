@@ -288,7 +288,7 @@ function UpdateCourse() {
             <ul>
                 {courseData.programma_corso.map((modulo, index) => (
                     <li key={index}>
-                        Modulo: {modulo.modulo}, Descrizione: {modulo.descrizione}, Durata: {modulo.durata} minuti
+                        Modulo: {modulo.modulo}, Descrizione: {modulo.descrizione}, Durata: {modulo.durata} ore
                     </li>
                 ))}
             </ul>

@@ -1,0 +1,20 @@
+.homepage-container {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 20px;
+}
+
+.homepage-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #343a40;
+}
+
+.homepage-container p {
+    font-size: 1.2rem;
+    color: #6c757d;
+}

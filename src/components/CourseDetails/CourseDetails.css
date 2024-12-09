@@ -1,0 +1,30 @@
+.container {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: white;
+}
+
+.list-group-item {
+    font-size: 1rem;
+    color: #555;
+    border: none;
+    padding: 15px;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+}

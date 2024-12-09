@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Loader from '../Loader/Loader';
 import { createCourse, getAllParticipants } from '../../services/courseService';
+import { useNavigate } from 'react-router-dom';
+import Header from '../Header/Header';
+import Loader from '../Loader/Loader';
 import courses from '../../services/courses';
 import './CreateCourse.css';
 
@@ -193,6 +194,8 @@ function CreateCourse() {
     if (loading) return <div><Loader/></div>;
 
     return (
+        <>
+        
         <div className="container my-5">
             <h2 className="mb-4 text-center">Crea Nuovo Corso</h2>
             {error && <p style={{color: 'red'}}>{error}</p>}
@@ -301,6 +304,7 @@ function CreateCourse() {
                 <button type="submit" className="btn btn-primary w-100">Crea Corso</button>
             </form>
         </div>
+        </>
     );
 }
 

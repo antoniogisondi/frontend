@@ -22,7 +22,7 @@ function RegisterPage() {
         e.preventDefault()
         try {
             await registerUser(formData);
-            navigate('/login');
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Errore durante la registrazione');
         }
