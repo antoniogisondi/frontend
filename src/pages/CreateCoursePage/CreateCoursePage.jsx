@@ -1,10 +1,12 @@
 import React from 'react'
-import './CreateCoursePage.css'
 import CreateCourse from '../../components/CreateCourse/CreateCourse'
+import Header from '../../components/Header/Header'
+import './CreateCoursePage.css'
 
 function CreateCoursePage() {
     return (
-        <div>
+        <div className='container-fluid gx-0'>
+            <Header/>
             <CreateCourse/>
         </div>
     )

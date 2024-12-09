@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Header from '../../components/Header/Header'
-import Footer from '../../components/Footer/Footer'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useParticipantAuth } from '../../context/ParticipantAuthContext'
@@ -25,7 +24,7 @@ function Homepage() {
   };
 
   return (
-    <>
+    <div className="container-fluid gx-0">
       <Header />
       <div className="homepage-container">
         <div className="text-center">
@@ -52,8 +51,7 @@ function Homepage() {
           )}
         </div>
       </div>
-      <Footer />
-    </>
+    </div>
   )
 }
 

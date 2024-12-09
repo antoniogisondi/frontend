@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import Header from "../../components/Header/Header";
-import Footer from "../../components/Footer/Footer";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./Dashboard.css";
@@ -15,7 +14,7 @@ function Dashboard() {
     }
 
     return (
-        <>
+        <div className="container-fluid gx-0">
             <Header />
             <div className="container vh-100 d-flex flex-column justify-content-center align-items-center text-center">
                 <div className="row">
@@ -35,8 +34,7 @@ function Dashboard() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </div>
     );
 }
 
