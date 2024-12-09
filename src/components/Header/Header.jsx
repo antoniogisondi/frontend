@@ -108,46 +108,46 @@ function Header() {
                     </div>
                 </div>
             </nav>
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col">
-                        {isAuthenticated ? (
-                            <>
-                                <Link className='btn btn custom-subheader' to='/'>
-                                    Home
-                                </Link>
-                                <Link className='btn btn custom-subheader' to='/dashboard/partecipanti'>
-                                    Visualizza i corsisti
-                                </Link>
-                                <Link className='btn btn custom-subheader' to='/dashboard/corsi'>
-                                    Corsi in aula
-                                </Link>
-                            </>
-                        ) : isAuthenticatedP ? (
-                            <>
-                                <Link className='btn btn custom-subheader' to='/'>
-                                    Home
-                                </Link>
-                                <Link className='btn btn custom-subheader' to='/dashboard/partecipanti'>
-                                    Visualizza i corsi che hai effettuato
-                                </Link>
-                            </>
-                        ) : (
-                            <>
-                                <Link className='btn btn custom-subheader' to='/'>
-                                    Home
-                                </Link>
-                                <Link className='btn btn custom-subheader' to='/dashboard/partecipanti'>
-                                    Visualizza i corsisti
-                                </Link>
-                                <Link className='btn btn custom-subheader'>
-                                    Corsi in aula
-                                </Link>
-                            </>
-                        )}
+            <nav className="navbar navbar-expand-lg">
+                <div className="container bg-white sub-container p-0">
+                    <div className="row">
+                    {isAuthenticated ? (
+                        <div className="col">
+                            <Link className='btn btn custom-subheader' to='/'>
+                                Home
+                            </Link>
+                            <Link className='btn btn custom-subheader' to='/dashboard/corsi'>
+                                Corsi in aula
+                            </Link>
+                            <Link className='btn btn custom-subheader' to='/dashboard/partecipanti'>
+                                Visualizza i corsisti
+                            </Link>
+                        </div>
+                    ) : isAuthenticatedP ? (
+                        <div className='col'>
+                            <Link className='btn btn custom-subheader' to='/'>
+                                Home
+                            </Link>
+                            <Link className='btn btn custom-subheader' to='/participant-dashboard/corsi'>
+                                Visualizza i corsi che hai effettuato
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className='col'>
+                            <Link className='btn btn custom-subheader' to='/'>
+                                Home
+                            </Link>
+                            <Link className='btn btn custom-subheader' to='/dashboard/partecipanti'>
+                                Visualizza i corsisti
+                            </Link>
+                            <Link className='btn btn custom-subheader'>
+                                Corsi in aula
+                            </Link>
+                        </div>
+                    )}
                     </div>
                 </div>
-            </div>
+            </nav>
         </header>
     );
 }

@@ -29,8 +29,10 @@ export const ParticipantAuthProvider = ({ children }) => {
         setParticipantDetails(null);
     };
 
+    const token = localStorage.getItem('participantToken')
+
     return (
-        <ParticipantAuthContext.Provider value={{ isAuthenticatedP, participantDetails, loginP, logoutP }}>
+        <ParticipantAuthContext.Provider value={{ isAuthenticatedP, participantDetails, loginP, logoutP, token }}>
             {children}
         </ParticipantAuthContext.Provider>
     );

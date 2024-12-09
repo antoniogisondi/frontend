@@ -18,6 +18,7 @@ function ParticipantDashboard() {
             ) : (
               <>
                 <h1>Benvenuto {participantDetails.nome} {participantDetails.cognome}</h1>
+                <Link to='/participant-dashboard/corsi'>Visualizza i tuoi corsi</Link>
               </>
             )}
           </div>

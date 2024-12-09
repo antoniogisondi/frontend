@@ -16,7 +16,7 @@ function Dashboard() {
     return (
         <div className="container-fluid gx-0">
             <Header />
-            <div className="container vh-100 d-flex flex-column justify-content-center align-items-center text-center">
+            <div className="container d-flex flex-column justify-content-center align-items-center text-center my-5">
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="display-4 mb-4">Benvenuto nella Dashboard</h1>

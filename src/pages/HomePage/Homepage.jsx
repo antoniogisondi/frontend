@@ -26,29 +26,31 @@ function Homepage() {
   return (
     <div className="container-fluid gx-0">
       <Header />
-      <div className="homepage-container">
-        <div className="text-center">
-          <h1 className="display-4">Benvenuto nella Piattaforma</h1>
-          <p className="lead mb-4">
-              Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.
-          </p>
-          {isAuthenticated ? (
-            <>
+      <div className="container homepage-container mt-5">
+        <div className="row text-center">
+          <div className="col">
+            <h1 className="display-4">Benvenuto nella Piattaforma</h1>
+            <p className="lead mb-4">
+                Gestisci i tuoi corsi e i partecipanti in modo semplice ed efficace.
+            </p>
+            {isAuthenticated ? (
+              <>
               <Link to="/dashboard" className="btn btn-primary me-2">Vai alla Dashboard</Link>
               <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
-            </>
-          ) : isAuthenticatedP ? (
-            <>
+              </>
+            ) : isAuthenticatedP ? (
+              <>
               <Link to="/participant-dashboard" className="btn btn-primary me-2">Vai alla Dashboard Corsista</Link>
               <button className="btn btn-danger" onClick={handleLogoutP}>Logout</button>
-            </>
-          ) : (
-            <>
+              </>
+            ) : (
+              <>
               <Link to="/accesso" className="btn btn-outline-secondary me-2">Login</Link>
               <Link to="/registrazione" className="btn btn-primary me-2">Registrazione</Link>
               <Link to="/accesso-corsista" className="btn btn-primary">Accesso Corsista</Link>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
