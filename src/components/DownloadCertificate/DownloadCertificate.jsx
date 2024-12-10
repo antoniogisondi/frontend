@@ -10,16 +10,15 @@ function DownloadCertificate({courseId, participantId}) {
         setError(null);
 
         try {
-            console.log({participantId, courseId})
             const response = await generateCertificate(participantId, courseId);
 
-            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const blob = new Blob([response], { type: 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
 
             // Creazione di un link per forzare il download
             const link = document.createElement('a');
             link.href = url;
-            link.download = `Attestato_${courseId}.pdf`;
+            link.download = `Attestato-${participantId}.pdf`;
             document.body.appendChild(link);
             link.click();
 
