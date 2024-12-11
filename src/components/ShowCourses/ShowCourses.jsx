@@ -6,6 +6,9 @@ import './ShowCourses.css'
 
 function ShowCourses() {
     const [courses, setCourses] = useState([]);
+    const [filterStatus, setFilterStatus] = useState('')
+    const [filteredCourses, setFilteredCourses] = useState([])
+    const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState('')
@@ -15,6 +18,7 @@ function ShowCourses() {
             try {
                 const data = await getAllCourses();
                 setCourses(data); // Salva i corsi nello stato
+                setFilteredCourses(data)
                 setLoading(false);
             } catch (err) {
                 setError('Errore durante il recupero dei corsi.');
@@ -24,6 +28,41 @@ function ShowCourses() {
 
         fetchCourses();
     }, []);
+
+    const handleSearch = (e) => {
+        const searchQuery = e.target.value.toLowerCase();
+        setQuery(searchQuery);
+
+        const filtered = courses.filter((course) => {
+            const matchesQuery =
+                course.numero_autorizzazione.toLowerCase().includes(searchQuery) ||
+                course.nome_corso.toLowerCase().includes(searchQuery);
+
+            const matchesStatus =
+                filterStatus === 'Tutti' || course.status === filterStatus;
+
+            return matchesQuery && matchesStatus;
+        });
+
+        setFilteredCourses(filtered);
+    };
+
+    const handleStatusClick = (status) => {
+        setFilterStatus(status);
+
+        const filtered = courses.filter((course) => {
+            const matchesQuery =
+                course.numero_autorizzazione.toLowerCase().includes(query) ||
+                course.nome_corso.toLowerCase().includes(query);
+
+            const matchesStatus =
+                status === 'Tutti' || course.status === status;
+
+            return matchesQuery && matchesStatus;
+        });
+
+        setFilteredCourses(filtered);
+    };
 
     const handleDelete = async (id) => {
         if (window.confirm('Sei sicuro di voler eliminare questo corso?')) {
@@ -63,7 +102,7 @@ function ShowCourses() {
                     </div>
                     <div className="col-md-6">
                         <label>Ricerca</label>
-                        <input type="text" className="form-control" placeholder="Numero autorizzazione, titolo, indirizzo" />
+                        <input type="text" className="form-control" placeholder="Numero autorizzazione, titolo, indirizzo" value={query} onChange={handleSearch} />
                     </div>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mt-3">
@@ -72,21 +111,18 @@ function ShowCourses() {
                 </div>
             </div>
             <div className="status-summary d-flex justify-content-around text-center mb-4">
-                <div>
-                    <p>In bozza</p>
-                </div>
-                <div>
-                    <p>In fase di autorizzazione</p>
-                </div>
-                <div>
-                    <p>Autorizzati</p>
-                </div>
-                <div>
-                    <p>Richieste di modifica</p>
-                </div>
-                <div>
-                    <p>Richieste rilascio attestati</p>
-                </div>
+                <button className={`btn ${filterStatus === 'Tutti' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => handleStatusClick('Tutti')}>
+                    Tutti
+                </button>
+                <button className={`btn ${filterStatus === 'Richiesto' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => handleStatusClick('Richiesto')}>
+                    Richiesti
+                </button>
+                <button className={`btn ${filterStatus === 'Attivo' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => handleStatusClick('Attivo')}>
+                    Attivi
+                </button>
+                <button className={`btn ${filterStatus === 'Completato' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => handleStatusClick('Completato')}>
+                    Completati
+                </button>
             </div>
             <div className="courses-list">
             <h3 className="list-title">Lista in Bozza</h3>
@@ -108,27 +144,32 @@ function ShowCourses() {
                         </tr>
                     </thead>
                     <tbody>
-                    {courses.map((course,index) => (
-                        <tr key={course._id}>
-                            <td>{index + 1}. {course.nome_corso}</td>
-                            <td>{course.numero_autorizzazione}</td>
-                            <td>{course.categoria_corso}</td>
-                            <td>{course.indirizzo_di_svolgimento} - {course.cap_sede_corso} - {course.città_di_svolgimento} {course.provincia}</td>
-                            <td>{new Date(course.durata_corso[0]?.giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
-                            <td>{new Date(course.durata_corso[course.durata_corso.length - 1]?.giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
-                            <td className="text-center">
-                                <Link to={`/dashboard/corsi/${course._id}`} className="btn btn-sm btn-info me-2">
-                                    <i className="bi bi-eye"></i>
-                                </Link>
-                                <Link to={`/dashboard/corsi/${course._id}/modifica`} className="btn btn-sm btn-warning me-2">
-                                    <i className="bi bi-pencil"></i>
-                                </Link>
-                                <button className="btn btn-sm btn-danger" onClick={() => handleDelete(course._id)}>
-                                    <i className="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                        {filteredCourses.length > 0 ? (
+                            filteredCourses.map((course, index) => (
+                                <tr key={course._id}>
+                                <td>{index + 1}. {course.nome_corso}</td>
+                                <td>{course.numero_autorizzazione}</td>
+                                <td>{course.categoria_corso}</td>
+                                <td>{course.indirizzo_di_svolgimento} - {course.cap_sede_corso} - {course.città_di_svolgimento} {course.provincia}</td>
+                                <td>{new Date(course.durata_corso[0]?.giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                                <td>{new Date(course.durata_corso[course.durata_corso.length - 1]?.giorno).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                                <td className="text-center">
+                                    <Link to={`/dashboard/corsi/${course._id}`} className="btn btn-sm btn-info me-2">
+                                        <i className="bi bi-eye"></i>
+                                    </Link>
+                                    <Link to={`/dashboard/corsi/${course._id}/modifica`} className="btn btn-sm btn-warning me-2">
+                                        <i className="bi bi-pencil"></i>
+                                    </Link>
+                                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(course._id)}>
+                                        <i className="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            ))) : (
+                            <tr>
+                                <td>Nessun corso trovato</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             )}

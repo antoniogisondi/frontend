@@ -34,7 +34,7 @@ function CourseDetails() {
             <h1 className="mb-4">{course.nome_corso}</h1>
             <div className="row">
                 <div className="col-md-6">
-                    <p><strong>Numero Autorizzazione:</strong> {course.numero_autorizzazione || 'N/A'} del {new Date(course.data_richiesta).toLocaleDateString('it-IT')}</p>
+                    <p><strong>Numero Autorizzazione:</strong> {course.numero_autorizzazione || 'N/A'} del {new Date(course.data_richiesta).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
                     <p><strong>Categoria:</strong> {course.categoria_corso || 'N/A'}</p>
                     <p><strong>Indirizzo:</strong> {course.indirizzo_di_svolgimento}, {course.città_di_svolgimento} ({course.provincia})</p>
                 </div>

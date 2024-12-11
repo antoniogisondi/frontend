@@ -12,3 +12,24 @@ export const generateCertificate = async (participantId,courseId) => {
     )
     return response.data
 }
+
+
+export const createPayment = async ( participantId, courseId) => {
+    try {
+        const token = localStorage.getItem('participantToken')
+        const response = await API.post('/payments/courses', {
+            courseId,
+            participantId
+        },
+    {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        console.log(response.data)
+        return response.data  
+    } catch (error) {
+        console.error('Errore durante la creazione del pagamento:', error);
+        throw error; 
+    }
+}
