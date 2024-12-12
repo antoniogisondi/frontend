@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { getPayments } from '../../services/participantService'
 
 function SuccessPaymentPage() {
     const [searchParams] = useSearchParams()
@@ -12,17 +11,6 @@ function SuccessPaymentPage() {
             navigate('/participant-dashboard/corsi')
             return
         }
-
-        const fetchSessionDetails = async () => {
-            try {
-                const response = await getPayments()
-                console.log(response)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-
-        fetchSessionDetails()
     }, [searchParams, navigate])
     return (
         <div className="container text-center my-5">

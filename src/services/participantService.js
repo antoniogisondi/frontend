@@ -18,8 +18,8 @@ export const createPayment = async ( participantId, courseId, nome_corso, autori
     try {
         const token = localStorage.getItem('participantToken')
         const response = await API.post('/payments/courses', {
-            courseId,
             participantId,
+            courseId,
             nome_corso,
             autorizzazione,
             costo
@@ -34,11 +34,4 @@ export const createPayment = async ( participantId, courseId, nome_corso, autori
         console.error('Errore durante la creazione del pagamento:', error);
         throw error; 
     }
-}
-
-export const getPayments = async () => {
-    const token = localStorage.getItem('participantToken')
-    const response = await API.get('/payments/courses')
-    console.log(response.data)
-    return response.data
 }
