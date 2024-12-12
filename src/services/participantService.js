@@ -14,22 +14,31 @@ export const generateCertificate = async (participantId,courseId) => {
 }
 
 
-export const createPayment = async ( participantId, courseId) => {
+export const createPayment = async ( participantId, courseId, nome_corso, autorizzazione, costo) => {
     try {
         const token = localStorage.getItem('participantToken')
         const response = await API.post('/payments/courses', {
             courseId,
-            participantId
+            participantId,
+            nome_corso,
+            autorizzazione,
+            costo
         },
     {
         headers: {
             Authorization: `Bearer ${token}`
         }
     })
-        console.log(response.data)
         return response.data  
     } catch (error) {
         console.error('Errore durante la creazione del pagamento:', error);
         throw error; 
     }
+}
+
+export const getPayments = async () => {
+    const token = localStorage.getItem('participantToken')
+    const response = await API.get('/payments/courses')
+    console.log(response.data)
+    return response.data
 }

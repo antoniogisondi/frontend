@@ -12,6 +12,7 @@ function CreateCourse() {
     const [courseData, setCourseData] = useState({
         nome_corso: '',
         indirizzo_di_svolgimento: '',
+        costo: [],
         cap_sede_corso: '',
         città_di_svolgimento: '',
         provincia: '',
@@ -64,6 +65,7 @@ function CreateCourse() {
             ...prev,
             nome_corso: selected.nome_corso,
             programma_corso: selected.programma_corso,
+            costo: selected.costo
         }));
     };
 
