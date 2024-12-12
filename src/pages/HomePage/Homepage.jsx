@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Header from '../../components/Header/Header'
+import Loader from '../../components/Loader/Loader'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useParticipantAuth } from '../../context/ParticipantAuthContext'
@@ -22,6 +23,8 @@ function Homepage() {
     await logoutP();
     setLoading(false);
   };
+
+  if (loading) return <div className='container-fluid gx-0'><Loader/></div>
 
   return (
     <div className="container-fluid gx-0">

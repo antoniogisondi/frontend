@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Per leggere l'ID dal parametro della rotta
+import { useParams } from 'react-router-dom'; 
 import { getCourseDetails } from '../../services/courseService';
-import Loader from '../Loader/Loader'; // Assumendo che tu abbia un componente Loader
+import Loader from '../Loader/Loader'; 
 import './CourseDetails.css';
 
 function CourseDetails() {
-    const { id } = useParams(); // Recupera l'ID del corso dalla rotta
+    const { id } = useParams(); 
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

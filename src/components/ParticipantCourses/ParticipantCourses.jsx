@@ -8,7 +8,7 @@ import Loader from '../Loader/Loader';
 import './ParticipantCourses.css';
 
 function ParticipantCourses() {
-    const stripePromise = loadStripe('pk_test_51Px39k2KLJ4JHD7UF4UxSU9nZsCUrm9FUlVKPbQQmj896v7GwsSCGQiwXsaf0tPNU9XplQb8QyPDXLIHdtqHez5i00DCQFB8t5');
+    const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
     const { participantDetails } = useParticipantAuth();
     const [courses, setCourses] = useState([]);
     const [paidCourses, setPaidCourses] = useState([]);

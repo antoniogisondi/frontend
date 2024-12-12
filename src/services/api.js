@@ -2,7 +2,7 @@ import axios from "axios";
 
 // creo l'endpoint per l'API
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api'
+    baseURL: import.meta.env.VITE_API_URL
 })
 
 // Invio i dati al backend per login e registrazione
