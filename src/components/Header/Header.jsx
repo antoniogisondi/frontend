@@ -3,7 +3,7 @@ import './Header.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useParticipantAuth } from '../../context/ParticipantAuthContext';
-import logo from '../../../public/img/Logo MGL Consulting.jpg'
+import logo from '/img/Logo MGL Consulting.jpg'
 
 function Header() {
     const { isAuthenticated, logout } = useAuth();

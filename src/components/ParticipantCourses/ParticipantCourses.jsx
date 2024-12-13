@@ -79,7 +79,7 @@ function ParticipantCourses() {
                                                 : 'N/A'
                                             } ore
                                         </p>
-                                        <Link className="btn btn-primary btn-sm w-100">
+                                        <Link className="btn btn-primary btn-sm w-100" to={`/participant-dashboard/corsi/${course._id}`}>
                                             Visualizza i dettagli
                                         </Link>
                                         {course.status === 'Completato' && isPaid ? (

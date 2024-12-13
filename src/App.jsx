@@ -18,6 +18,7 @@ import UpdateParticipantsPage from './pages/UpdateParticipantsPage/UpdatePartici
 import LoginParticipantPage from './pages/LoginParticipantPage/LoginParticipantPage'
 import ParticipantDashboard from './pages/ParticipantDashboard/ParticipantDashboard'
 import ParticipantCoursesPage from './pages/ParticipantCoursesPage/ParticipantCoursesPage'
+import ParticipantCoursesDetailsPage from './pages/ParticipantCoursesDetailsPage/ParticipantCoursesDetailsPage'
 import SuccessPaymentPage from './pages/SuccessPaymentPage/SuccessPaymentPage'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle'
@@ -35,6 +36,7 @@ function App() {
             <Route path='/accesso-corsista' element={<LoginParticipantPage/>}/>
             <Route path='/participant-dashboard' element={<PrivateParticipantRoute><ParticipantDashboard/></PrivateParticipantRoute>}/>
             <Route path='/participant-dashboard/corsi' element={<PrivateParticipantRoute><ParticipantCoursesPage/></PrivateParticipantRoute>}/>
+            <Route path='/participant-dashboard/corsi/:id' element={<PrivateParticipantRoute><ParticipantCoursesDetailsPage/></PrivateParticipantRoute>}/>
             <Route path='/success' element={<PrivateParticipantRoute><SuccessPaymentPage/></PrivateParticipantRoute>}></Route>
             <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
             <Route path='/dashboard/crea-corso' element={<PrivateRoute><CreateCoursePage/></PrivateRoute>}/>
