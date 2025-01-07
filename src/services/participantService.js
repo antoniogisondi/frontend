@@ -7,7 +7,7 @@ export const generateCertificate = async (participantId,courseId) => {
             headers: {
                 Authorization: `Bearer ${token}`, // Invia il token
             },
-            responseType: 'blob'
+            responseType: 'arraybuffer'
         }
     )
     return response.data

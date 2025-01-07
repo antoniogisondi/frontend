@@ -14,6 +14,7 @@ function ParticipantCoursesDetails() {
     const [isPaid, setIsPaid] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [errorPaid, setErrorPaid] = useState(null);
     const participantCourses = participantDetails.courseId
 
     useEffect(() => {
@@ -34,7 +35,7 @@ function ParticipantCoursesDetails() {
                 if(isPaidCourse){
                     setIsPaid(isPaidCourse)
                 } else {
-                    setError('Nessun corso risulta pagato')
+                    setErrorPaid('Il corso risulta non pagato, effettua il pagamento per generare l\'attestato')
                 }
             } else {
                 setError('Errore nel recupero dei dettagli del corso')
@@ -71,6 +72,7 @@ function ParticipantCoursesDetails() {
             {course && (
                 <div className="row">
                     <div className="col">
+                        {errorPaid && <p style={{color: 'black'}}>{errorPaid}</p>}
                         <h1>{course.nome_corso}</h1>
                         {course.status === 'Completato' && isPaid ? (
                             <DownloadCertificate courseId={course._id} participantId={participantDetails._id} />

@@ -28,16 +28,22 @@ function RegisterPage() {
         }
     }
     return (
-        <div>
-            <h1>Registrazione</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="name" placeholder="Nome" onChange={handleChange} />
-                <input type="text" name="surname" placeholder="Cognome" onChange={handleChange} />
-                <input type="text" name="username" placeholder="Username" onChange={handleChange} />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} />
-                <button type="submit">Registrati</button>
-            </form>
+        <div className="container-fluid gx-0">
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-8">
+                        <h1>Registrazione</h1>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        <form onSubmit={handleSubmit}>
+                            <input type="text" name="name" placeholder="Nome" onChange={handleChange} />
+                            <input type="text" name="surname" placeholder="Cognome" onChange={handleChange} />
+                            <input type="text" name="username" placeholder="Username" onChange={handleChange} />
+                            <input type="password" name="password" placeholder="Password" onChange={handleChange} />
+                            <button type="submit">Registrati</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
